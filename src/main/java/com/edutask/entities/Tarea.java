@@ -27,6 +27,6 @@ public class Tarea {
     @JoinColumn(name = "Profesor_id", nullable = false)
     private Profesor profesor;
 
-    @OneToMany(mappedBy = "Tarea", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Alumno_Tarea> alumnoTarea = new HashSet<>();
 }

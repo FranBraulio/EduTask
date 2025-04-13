@@ -23,7 +23,7 @@ public class Grupo {
     @JoinColumn(name = "Profesor_id", nullable = false)
     private Profesor profesor;
 
-    @OneToMany(mappedBy = "Grupo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Alumno> alumnos;
 }
