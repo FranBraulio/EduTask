@@ -40,7 +40,7 @@ $('#registration-form').on('submit', function(e) {
                         text.textContent = "El usuario ha sido creado con éxito."
                         errorModal.show(); // Mostrar el modal de éxito
                     }
-                    window.location.href = '/login#login'; // Redireccionar al formulario de login
+                    window.location.href = '/index#login'; // Redireccionar al formulario de login
                 },
                 error: function (xhr, status, error) {
                     deleteBG(header) // Limpiar el estilo de fondo anterior

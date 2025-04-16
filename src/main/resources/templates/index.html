@@ -22,7 +22,7 @@
 		<!-- Header -->
 		<header id="header">
 			<div class="logo">
-				<span><img class="logo-img" src="assets/images/lg-11.png" alt="Logo Image"></span>
+				<span><a href="index"><img class="logo-img" src="assets/images/lg-11.png" alt="Logo Image"></a></span>
 			</div>
 			<div class="content">
 				<div class="inner">
@@ -158,21 +158,26 @@
 						<li class="fb"><a href="#">Facebook</a></li>
 					</ul>
 				</div>
-				<form method="post" action="/login">
-					<div class="fields">
-						<div class="field half">
-							<label for="email">Email</label>
-							<input type="email" name="email" id="email" placeholder="Enter your email">
-						</div>
-						<div class="field half">
-							<label for="password">Password</label>
-							<input type="password" name="password" id="password" placeholder="Enter your password">
+				<form class="form" method="POST" action="/login" id="loginForm">
+					<div class="flex-column">
+						<label for="email" class="form-label">Email address</label>
+						<div class="inputForm">
+							<input type="email" id="email" name="email" class="input" placeholder="Enter email">
 						</div>
 					</div>
+					<br>
+					<div class="flex-column">
+						<label for="password" class="form-label">Password</label>
+						<div class="inputForm">
+							<input type="password" id="password" name="password" class="input" placeholder="Password">
+						</div>
+					</div>
+					<br>
 					<ul class="actions">
-						<li><a href="/login"><input type="button" value="Log In"></a></li>
+						<li><button type="submit" class="button-submit">Log In</button></li>
 						<li><a href="register.html"><input type="button" value="register"></a></li>
 					</ul>
+
 				</form>
 			</article>
 		</div>
