@@ -7,6 +7,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="icon" href="assets/images/logoProvisionalSinFondo.png" type="image" sizes="16x16">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/3.12.0/modernizr.min.js"></script>
+
+
 	<link rel="stylesheet" href="assets/css/main.css" />
 </head>
 
@@ -154,7 +158,7 @@
 						<li class="fb"><a href="#">Facebook</a></li>
 					</ul>
 				</div>
-				<form method="post" action="#">
+				<form method="post" action="/login">
 					<div class="fields">
 						<div class="field half">
 							<label for="email">Email</label>
@@ -166,7 +170,7 @@
 						</div>
 					</div>
 					<ul class="actions">
-						<li><a href="dashboard.html"><input type="button" value="Log In"></a></li>
+						<li><a href="/login"><input type="button" value="Log In"></a></li>
 						<li><a href="register.html"><input type="button" value="register"></a></li>
 					</ul>
 				</form>
@@ -185,7 +189,6 @@
 	<div id="bg"></div>
 
 	<!-- Scripts -->
-	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/js/browser.min.js"></script>
 	<script src="assets/js/breakpoints.min.js"></script>
 	<script src="assets/js/util.js"></script>
