@@ -14,9 +14,6 @@ public class Alumno_Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "quantity")
-    private double quantity;
-
     @ManyToOne
     @JoinColumn(name = "Alumno_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore

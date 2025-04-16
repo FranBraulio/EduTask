@@ -17,7 +17,7 @@ public class Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "mensaje")
+    @Column(name = "mensaje", nullable = false)
     private String mensaje;
 
     @Column(name = "fecha_fin")

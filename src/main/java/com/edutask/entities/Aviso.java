@@ -13,10 +13,10 @@ public class Aviso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "mensaje")
+    @Column(name = "mensaje", nullable = false)
     private String mensaje;
 
-    @Column(name = "canal")
+    @Column(name = "canal", nullable = false)
     private String canal;
 
     @ManyToOne
