@@ -3,10 +3,12 @@ package com.edutask.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
+@NoArgsConstructor
 
 @Entity
 @Table(name = "Profesor")
@@ -17,6 +19,9 @@ public class Profesor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username", nullable = false)
+    private String username;
+
     @Column(name = "email", nullable = false)
     private String email;
 
@@ -25,9 +30,6 @@ public class Profesor {
 
     @Column(name = "rol", nullable = false)
     private String rol;
-
-    @Column(name = "nombre", nullable = false)
-    private String nombre;
 
     @OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -44,4 +46,5 @@ public class Profesor {
     @OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Aviso> avisos;
+
 }

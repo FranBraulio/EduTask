@@ -1,0 +1,43 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: white; /* Fondo oscuro en el formulario */
+    padding: 30px;
+    width: 450px;
+    border-radius: 20px;
+    color: black;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.inputForm {
+    border: 1.5px solid #ecedec;
+    border-radius: 10px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    width: 100%; /* Asegura que el inputForm ocupe todo el ancho */
+}
+
+.input {
+    margin-left: 0; /* Eliminar el margen izquierdo */
+    border-radius: 10px;
+    border: none;
+    width: 100%; /* Hace que el input ocupe todo el ancho del contenedor */
+    height: 100%;
+    padding: 0 10px; /* Añado el padding directamente en el input */
+    box-sizing: border-box; /* Asegura que el padding no afecte al tamaño */
+}
+
+.button-submit {
+    margin: 20px 0;
+    background-color: #151717;
+    border: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 10px;
+    height: 50px;
+    width: 100%;
+    cursor: pointer;
+}
