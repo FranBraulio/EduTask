@@ -6,7 +6,7 @@ body {
     background-color: #343a40; /* Color de fondo del encabezado */
     color: #fff; /* Color del texto del encabezado */
     padding: 15px 20px; /* Espaciado interno del encabezado (arriba/abajo, izquierda/derecha) */
-    display: flex; /* Utiliza flexbox para la disposición de los elementos internos */
+    display: compact; /* Utiliza flexbox para la disposición de los elementos internos */
     justify-content: space-between; /* Espacia los elementos internos horizontalmente, con espacio entre ellos */
     align-items: center; /* Alinea los elementos internos verticalmente al centro */
 }
@@ -115,11 +115,6 @@ h2 {
     margin-top: 5px; /* Margen superior de la lista scrollable */
 }
 
-.task-history {
-    border-left: 1px solid #dee2e6; /* Borde izquierdo para el historial de tareas */
-    padding-left: 20px; /* Espaciado interno izquierdo para el historial de tareas */
-}
-
 .bi {
     margin-right: 8px; /* Margen derecho para los iconos */
 }
@@ -177,6 +172,10 @@ h2 {
     padding-bottom: 15px; /* Espaciado inferior del encabezado del modal */
     border-bottom: 1px solid #dee2e6; /* Borde inferior del encabezado del modal */
     margin-bottom: 15px; /* Margen inferior del encabezado del modal */
+}
+
+.header-content{
+    margin-left: 15%;
 }
 
 .modal-body {
@@ -240,4 +239,13 @@ h2 {
 
 .group-radio-item input[type="radio"] {
     margin-right: 10px; /* Margen derecho del radio button de grupo */
+}
+
+.seccion-gestion{
+    background-color: #f8f9fa; /* Color de fondo del formulario de mensajes */
+    padding: 20px; /* Espaciado interno del formulario de mensajes */
+    border-radius: 8px; /* Bordes redondeados del formulario de mensajes */
+    border: 1px solid #dee2e6; /* Borde del formulario de mensajes */
+    margin-top: 20px; /* Margen superior del formulario de mensajes */
+
 }

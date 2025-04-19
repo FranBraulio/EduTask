@@ -2,15 +2,22 @@ package com.edutask.controller;
 
 import com.edutask.entities.Profesor;
 import com.edutask.service.ProfesorService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.CredentialException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @RestController
@@ -55,5 +62,86 @@ public class ProfesorController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el profesor");
             }
         }
+    }
+
+    // Metodo para iniciar sesión en el sistema
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
+        Profesor profesor = profesorService.findByEmail(email);
+        if (profesor == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado");
+        }
+
+        boolean isPasswordValid = profesorService.validatePassword(password, profesor.getPassword());
+        if (!isPasswordValid) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("Login exitoso");
+    }
+
+    // Metodo para obtener información del usuario autenticado
+    @GetMapping("/user")
+    List<String> info() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // Obtener la autenticación actual
+        List<String> userInfo;
+        // Si el usuario está autenticado a través de OAuth2 (login social), obtener el email desde el token
+        if (authentication.getPrincipal() instanceof OAuth2User) {
+            Profesor profesor = profesorService.findByEmail(((OAuth2User) authentication.getPrincipal()).getAttribute("email"));
+            userInfo = new ArrayList<>(Arrays.asList(profesor.getUsername(), profesor.getEmail()));
+        } else {
+            // Si no es OAuth2, recuperar la información del profesor a partir del nombre de profesor
+            userInfo = new ArrayList<>(Arrays.asList(profesorService.findByUsername(authentication.getName()).getUsername(), profesorService.findByUsername(authentication.getName()).getEmail()));
+        }
+        return userInfo;
+    }
+
+    // Metodo para editar el perfil del profesor autenticado
+    @PostMapping("/editProfile")
+    public ResponseEntity<?> editProfile(@RequestBody Profesor profesor) throws CredentialException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Profesor loggedUser;
+        loggedUser = profesorService.findByUsername(authentication.getName());
+
+        // Verifica si el correo proporcionado ya está registrado
+        if (!loggedUser.getEmail().equals(profesor.getEmail())) {
+            for (Profesor usu : profesorService.findAll()) {
+                if (usu.getEmail().equals(profesor.getEmail()) && !(usu == loggedUser)) {
+                    throw new CredentialException("El correo ya está registrado");
+                }
+            }
+        }
+        // Actualiza los datos del profesor
+        loggedUser.setUsername(profesor.getUsername());
+        loggedUser.setEmail(profesor.getEmail());
+        loggedUser.setPassword(passwordEncoder.encode(profesor.getPassword()));  // Encripta la nueva contraseña
+        profesorService.saveUser(loggedUser);
+        return ResponseEntity.ok("Profesor registrado con éxito");
+    }
+
+    @GetMapping("/delete")
+    public void deleteUser(HttpServletResponse response) throws IOException, MessagingException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Profesor loggedUser;
+
+        // Verifica el tipo de autenticación y obtiene el usuario
+        if (authentication.getPrincipal() instanceof OAuth2User) {
+            loggedUser = profesorService.findByEmail(((OAuth2User) authentication.getPrincipal()).getAttribute("email"));
+        } else {
+            loggedUser = profesorService.findByUsername(authentication.getName());
+        }
+
+        // Envía un correo notificando la eliminación de la cuenta
+        //emailService.enviarCorreo(loggedUser.getEmail(), "¡Cuenta eliminada!", "Su cuenta de CryptoSandbox ha sido eliminada con éxito.");
+        profesorService.deleteById(loggedUser.getId());  // Elimina el usuario de la base de datos
+
+        response.sendRedirect("/logout");  // Redirige al logout
+    }
+
+    // Metodo para eliminar un usuario por ID
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+        profesorService.deleteById(id);
+        return ResponseEntity.ok("Usuario eliminado correctamente");
     }
 }
