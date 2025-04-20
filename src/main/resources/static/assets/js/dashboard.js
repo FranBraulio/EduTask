@@ -6,7 +6,6 @@ const listaGrupos = document.getElementById('lista-grupos');
 const listaIndividuales = document.getElementById('lista-individuales');
 const listaHistorial = document.getElementById('lista-historial');
 const asignarSelect = document.getElementById('asignar_a');
-let listItems = document.querySelectorAll('.list-group-item-action');
 
 // MODAL: Añadir Individuo
 const addIndividualModal = document.getElementById('addIndividualModal');
@@ -15,6 +14,8 @@ const closeButtons = document.querySelectorAll('.close-button');
 const addIndividualForm = document.getElementById('addIndividualForm');
 const groupSelectionList = document.getElementById('group-selection-list');
 const buscarGruposIndividualInput = document.getElementById('buscar-grupos-individual');
+const profesorSelectionList = document.getElementById('profesor-selection-list');
+const buscarProfesorIndividualInput = document.getElementById('buscar-profesor-individual');
 
 // MODAL: Añadir Grupo
 const addGroupModal = document.getElementById('addGroupModal');
@@ -77,6 +78,16 @@ addIndividualBtn.addEventListener('click', () => {
             <input type="radio" name="grupo-seleccionado" value="${nombreGrupo}">
             <label>${nombreGrupo}</label>`;
         groupSelectionList.appendChild(radioItem);
+    });
+
+    document.querySelectorAll('#lista-grupos .profesor-item').forEach(profe => {
+        const nombreProfe = profe.textContent.trim();
+        const radioItem = document.createElement('div');
+        radioItem.classList.add('group-radio-item');
+        radioItem.innerHTML = `
+            <input type="radio" name="grupo-seleccionado" value="${nombreProfe}">
+            <label>${nombreProfe}</label>`;
+        profesorSelectionList.appendChild(radioItem);
     });
     addIndividualModal.style.display = "block";
 });
@@ -163,6 +174,14 @@ buscarGruposIndividualInput.addEventListener('keyup', () => {
     }
 });
 
+buscarProfesorIndividualInput.addEventListener('keyup', () => {
+    const filter = buscarProfesorIndividualInput.value.toUpperCase();
+    for (let item of profesorSelectionList.getElementsByClassName('group-radio-item')) {
+        const text = item.querySelector('label')?.textContent.toUpperCase() || '';
+        item.style.display = text.includes(filter) ? "" : "none";
+    }
+});
+
 // =================== Inicialización ===================
 
 const initialGrupos = ["Grupo A", "Grupo B", "Grupo C", "Grupo D"];
@@ -171,6 +190,16 @@ initialGrupos.forEach(grupo => {
         text: grupo,
         iconClass: 'bi bi-tag-fill',
         classes: ['grupo-item']
+    });
+    listaGrupos.appendChild(btn);
+});
+
+const initialProfesores = ["Profe A", "Profe B", "Profe C", "Profe D"];
+initialProfesores.forEach(profesores => {
+    const btn = createListButton({
+        text: profesores,
+        iconClass: 'bi bi-tag-fill',
+        classes: ['profesor-item']
     });
     listaGrupos.appendChild(btn);
 });

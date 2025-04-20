@@ -30,7 +30,7 @@ public class Alumno {
     private Profesor profesor;
 
     @ManyToOne
-    @JoinColumn(name = "Grupo_id", nullable = false)
+    @JoinColumn(name = "Grupo_id")
     private Grupo grupo;
 
     @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, orphanRemoval = true)

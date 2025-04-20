@@ -22,12 +22,15 @@ public class ProfesorService {
     public Profesor saveUser(Profesor user) {
         return profesorRepository.save(user);
     }
+
     public List<Profesor> findAll() {
         return profesorRepository.findAll();
     }
+
     public void deleteById(Long id) {
         profesorRepository.deleteById(id);
     }
+
     public boolean validatePassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
