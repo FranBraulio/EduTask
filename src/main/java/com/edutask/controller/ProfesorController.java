@@ -144,4 +144,11 @@ public class ProfesorController {
         profesorService.deleteById(id);
         return ResponseEntity.ok("Usuario eliminado correctamente");
     }
+
+    //Metodo para sacar todos los profesores
+    @GetMapping("/users")
+    public List<Profesor> users() {
+        return profesorService.findAll();
+    }
+
 }

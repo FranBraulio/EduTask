@@ -98,20 +98,28 @@ window.addEventListener('click', e => { if (e.target === addIndividualModal) add
 addIndividualForm.addEventListener('submit', e => {
     e.preventDefault();
     const nombre = document.getElementById('nombre-individual').value;
+    const apellido = document.getElementById("apellido-individual").value;
     const telefono = document.getElementById('telefono-individual').value;
-    const grupo = document.querySelector('input[name="grupo-seleccionado"]:checked')?.value || '';
+    const profesor = selectProfesor;
+    //CUANDO TENGAS CONFIGURADO LOS GRUPOS AÑADELO AQUI
+    const grupo = null;
+console.log(username)
+    // Crear objeto con los datos del usuario
+    let alumnoData = {nombre, apellido, telefono, profesor, grupo };
+    $.ajax({
+        url: '/alumno/create', // URL del endpoint de registro
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(alumnoData), // Convertir el objeto a JSON
+        success: function (response) {
+            // Si el registro es exitoso
 
-    console.log('Nuevo individuo:', nombre, 'Grupo:', grupo, 'Teléfono:', telefono);
-
-    const btn = createListButton({
-        text: nombre,
-        iconClass: 'bi bi-person-circle',
-        classes: ['individual-item']
+            window.location.href = '/dashboard.html'; // Redireccionar al formulario de login
+        },
+        error: function (xhr, status, error) {
+            console.log("Error")
+        }
     });
-
-    listaIndividuales.appendChild(btn);
-    addIndividualModal.style.display = "none";
-    addIndividualForm.reset();
 });
 
 // =================== Modal: Añadir Grupo ===================
@@ -194,25 +202,70 @@ initialGrupos.forEach(grupo => {
     listaGrupos.appendChild(btn);
 });
 
-const initialProfesores = ["Profe A", "Profe B", "Profe C", "Profe D"];
-initialProfesores.forEach(profesores => {
-    const btn = createListButton({
-        text: profesores,
-        iconClass: 'bi bi-tag-fill',
-        classes: ['profesor-item']
-    });
-    listaGrupos.appendChild(btn);
-});
+//Metodo get para sacar los profesores
+// Definimos un array vacío para almacenar los usuarios
+let initialProfesores = [];
+let selectProfesor = null;
+// Llamamos a la función getUsers para cargar los usuarios
+getUsers();
 
-const initialIndividuales = ["Persona 1", "Persona 2", "Persona 3", "Persona 4", "Persona 5"];
-initialIndividuales.forEach(persona => {
-    const btn = createListButton({
-        text: persona,
-        iconClass: 'bi bi-person-circle',
-        classes: ['individual-item']
-    });
-    listaIndividuales.appendChild(btn);
-});
+// Función para obtener los usuarios del servidor
+function getUsers() {
+    $.get("/users", (data) => {})
+        .done((data) => {
+            // Almacenamos los usuarios obtenidos en el array
+            initialProfesores = data;
+            // Llamamos a la función renderUsers para mostrar los usuarios
+            renderUsers();
+        })
+        .fail((error) => alert(error));
+}
+
+function renderUsers(filter = "") {
+    profesorSelectionList.innerHTML = "";
+
+    initialProfesores
+        .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(user => {
+            const div = document.createElement("div");
+            div.className = "user-item p-1 border-bottom";
+            div.textContent = user.username;
+            div.style.cursor = "pointer";
+            div.onclick = () => selectUser(user);
+            profesorSelectionList.appendChild(div);
+            console.log(selectUser(user))
+        });
+}
+
+function selectUser(user){
+    selectProfesor = user;
+    console.log(selectProfesor)
+    return selectProfesor;
+}
+
+//MOSTRAR INDIVIDUOS / ALUMNOS
+let initialIndividuales = [];
+getAlumnos();
+function getAlumnos() {
+    $.get("/alumnos", (data) => {})
+        .done((data) => {
+            initialIndividuales = data;
+            renderAlumnos();
+        })
+        .fail((error) => alert(error));
+}
+function renderAlumnos(filter = "") {
+    initialIndividuales
+        .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(alumno => {
+            console.log("entra")
+            const div = document.createElement("div");
+            div.className = "user-item p-1 border-bottom";
+            div.textContent = alumno.nombre;
+            div.style.cursor = "pointer";
+            listaIndividuales.appendChild(div);
+        });
+}
 
 $(document).ready(function () {
     // Se realiza una solicitud AJAX a la URL "/user"

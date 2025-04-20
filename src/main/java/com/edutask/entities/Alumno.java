@@ -16,17 +16,17 @@ public class Alumno {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "apellido", nullable = false)
+    @Column(name = "apellido")
     private String apellido;
 
     @Column(name = "telefono")
     private String telefono;
 
     @ManyToOne
-    @JoinColumn(name = "Profesor_id", nullable = false)
+    @JoinColumn(name = "Profesor_id")
     private Profesor profesor;
 
     @ManyToOne

@@ -151,7 +151,7 @@ h2 {
     top: 0;
     width: 100%; /* Ancho completo de la ventana */
     height: 100%; /* Alto completo de la ventana */
-    overflow: hidden; /* Evita el scroll dentro del modal */
+    overflow: scroll; /* Scroll dentro del modal */
     background-color: rgba(0, 0, 0, 0.4); /* Fondo negro con opacidad */
 }
 
