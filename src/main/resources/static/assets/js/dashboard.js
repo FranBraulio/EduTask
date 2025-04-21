@@ -51,8 +51,8 @@ function updateActiveClass(activeEl) {
 function syncSelectWithItem(selectedValue) {
     for (let i = 0; i < asignarSelect.options.length; i++) {
         const option = asignarSelect.options[i];
-        if (option.textContent === selectedValue || 
-            (selectedValue.startsWith('Grupo') && option.value.startsWith('grupo')) || 
+        if (option.textContent === selectedValue ||
+            (selectedValue.startsWith('Grupo') && option.value.startsWith('grupo')) ||
             (selectedValue.startsWith('Persona') && option.value.startsWith('individual'))) {
             asignarSelect.value = option.value;
             break;
@@ -143,7 +143,7 @@ window.addEventListener('click', e => { if (e.target === addGroupModal) addGroup
 addGroupForm.addEventListener('submit', e => {
     e.preventDefault();
     const nombre = document.getElementById('nombre-grupo').value;
-    const alumnos = null;
+    const alumnos = selectedAlumnos;
     const profesor = selectProfesor;
     let grupoData = {nombre, alumnos, profesor};
     $.ajax({
@@ -162,33 +162,15 @@ addGroupForm.addEventListener('submit', e => {
 
 // =================== Filtros de búsqueda ===================
 
-grupoInput.addEventListener('keyup', () => filterList(grupoInput, listaGrupos, 'grupo-item'));
-individualInput.addEventListener('keyup', () => filterList(individualInput, listaIndividuales, 'individual-item'));
+grupoInput.addEventListener('keyup', () => renderGroups(grupoInput.value));
+individualInput.addEventListener('keyup', () => renderAlumnos(individualInput.value));
 historialInput.addEventListener('keyup', () => filterList(historialInput, listaHistorial, 'historial-item'));
 
-buscarIndividuosGrupoInput.addEventListener('keyup', () => {
-    const filter = buscarIndividuosGrupoInput.value.toUpperCase();
-    for (let item of individualSelectionList.getElementsByClassName('individual-checkbox-item')) {
-        const text = item.querySelector('label')?.textContent.toUpperCase() || '';
-        item.style.display = text.includes(filter) ? "" : "none";
-    }
-});
+buscarIndividuosGrupoInput.addEventListener('keyup', () => renderAlumnos(buscarIndividuosGrupoInput.value));
+buscarGruposIndividualInput.addEventListener('keyup', () => renderGroups(buscarGruposIndividualInput.value));
+buscarProfesorIndividualInput.addEventListener('keyup', () => renderUsers(buscarProfesorIndividualInput.value));
+buscarProfesorGrupoInput.addEventListener('keyup', () => renderUsers(buscarProfesorGrupoInput.value));
 
-buscarGruposIndividualInput.addEventListener('keyup', () => {
-    const filter = buscarGruposIndividualInput.value.toUpperCase();
-    for (let item of groupSelectionList.getElementsByClassName('group-radio-item')) {
-        const text = item.querySelector('label')?.textContent.toUpperCase() || '';
-        item.style.display = text.includes(filter) ? "" : "none";
-    }
-});
-
-buscarProfesorIndividualInput.addEventListener('keyup', () => {
-    const filter = buscarProfesorIndividualInput.value.toUpperCase();
-    for (let item of profesorSelectionList.getElementsByClassName('group-radio-item')) {
-        const text = item.querySelector('label')?.textContent.toUpperCase() || '';
-        item.style.display = text.includes(filter) ? "" : "none";
-    }
-});
 
 // =================== Inicialización ===================
 
@@ -212,9 +194,11 @@ function getUsers() {
         })
         .fail((error) => alert(error));
 }
-
+let selectedProfesorDiv = null;
 function renderUsers(filter = "") {
     profesorSelectionList.innerHTML = "";
+    profesorGrupoSelectionList.innerHTML = "";
+
     initialProfesores
         .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
         .forEach(user => {
@@ -222,9 +206,17 @@ function renderUsers(filter = "") {
             div.className = "user-item p-1 border-bottom";
             div.textContent = user.username;
             div.style.cursor = "pointer";
-            div.onclick = () => selectUser(user);
+            div.onclick = () => {
+                if (selectedProfesorDiv) {
+                    selectedProfesorDiv.style.backgroundColor = "";
+                }
+                div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
+                selectedProfesorDiv = div;
+                selectUser(user);
+            };
             profesorSelectionList.appendChild(div);
         });
+    //Listado para los profesores al crear grupo
     initialProfesores
         .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
         .forEach(user => {
@@ -232,7 +224,14 @@ function renderUsers(filter = "") {
             div.className = "user-item p-1 border-bottom";
             div.textContent = user.username;
             div.style.cursor = "pointer";
-            div.onclick = () => selectUser(user);
+            div.onclick = () => {
+                if (selectedProfesorDiv) {
+                    selectedProfesorDiv.style.backgroundColor = "";
+                }
+                div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
+                selectedProfesorDiv = div;
+                selectUser(user);
+            };
             profesorGrupoSelectionList.appendChild(div);
         });
 }
@@ -254,7 +253,10 @@ function getAlumnos() {
         })
         .fail((error) => alert(error));
 }
+const selectedAlumnos = [];
 function renderAlumnos(filter = "") {
+    listaIndividuales.innerHTML = "";
+    individualSelectionList.innerHTML="";
     initialIndividuales
         .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
         .forEach(alumno => {
@@ -272,8 +274,24 @@ function renderAlumnos(filter = "") {
             div.className = "user-item p-1 border-bottom";
             div.textContent = alumno.nombre;
             div.style.cursor = "pointer";
+
+            div.onclick = () => {
+                const index = selectedAlumnos.indexOf(alumno);
+
+                if (index === -1) {
+                    // No está seleccionado, lo agregamos
+                    selectedAlumnos.push(alumno);
+                    div.style.backgroundColor = "rgba(0, 123, 255, 0.2)";
+                } else {
+                    // Ya está seleccionado, lo quitamos
+                    selectedAlumnos.splice(index, 1);
+                    div.style.backgroundColor = "";
+                }
+            };
+
             individualSelectionList.appendChild(div);
         });
+
 }
 
 //MOSTRAR GRUPOS
@@ -290,6 +308,9 @@ function getGroups() {
         .fail((error) => alert(error));
 }
 function renderGroups(filter = "") {
+    listaGrupos.innerHTML = "";
+    groupSelectionList.innerHTML = "";
+
     initialGroups
         .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
         .forEach(grupo => {
@@ -300,6 +321,7 @@ function renderGroups(filter = "") {
             listaGrupos.appendChild(div);
         });
     //Lista de grupos en el PopUp de individuos
+    let selectedGrupoDiv = null;
     initialGroups
         .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
         .forEach(grupo => {
@@ -307,7 +329,14 @@ function renderGroups(filter = "") {
             div.className = "user-item p-1 border-bottom";
             div.textContent = grupo.nombre;
             div.style.cursor = "pointer";
-            div.onclick = () => selectGroup(grupo);
+            div.onclick = () => {
+                if (selectedGrupoDiv) {
+                    selectedGrupoDiv.style.backgroundColor = "";
+                }
+                div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
+                selectedGrupoDiv = div;
+                selectGroup(grupo);
+            };
             groupSelectionList.appendChild(div);
         });
 }
@@ -316,7 +345,7 @@ function selectGroup(grupo){
     return selectedGroup;
 }
 
-//NOMBRE DEL TITULO
+//NOMBRE DEL TÍTULO
 $(document).ready(function () {
     // Se realiza una solicitud AJAX a la URL "/user"
     $.ajax({
