@@ -6,6 +6,8 @@ const listaGrupos = document.getElementById('lista-grupos');
 const listaIndividuales = document.getElementById('lista-individuales');
 const listaHistorial = document.getElementById('lista-historial');
 const asignarSelect = document.getElementById('asignar_a');
+const gruposTarea = document.getElementById("gruposTarea");
+const alumnosTarea = document.getElementById("alumnosTarea");
 
 // MODAL: Añadir Individuo
 const addIndividualModal = document.getElementById('addIndividualModal');
@@ -175,7 +177,7 @@ buscarProfesorGrupoInput.addEventListener('keyup', () => renderUsers(buscarProfe
 // =================== Inicialización ===================
 
 
-//Metodo get para sacar los profesores
+//PROFESORES
 
 // Definimos un array vacío para almacenar los usuarios
 let initialProfesores = [];
@@ -242,7 +244,7 @@ function selectUser(user){
     return selectProfesor;
 }
 
-//MOSTRAR INDIVIDUOS / ALUMNOS
+//INDIVIDUOS / ALUMNOS
 let initialIndividuales = [];
 getAlumnos();
 function getAlumnos() {
@@ -291,10 +293,17 @@ function renderAlumnos(filter = "") {
 
             individualSelectionList.appendChild(div);
         });
-
+    initialIndividuales
+        .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(alumno => {
+            const option = document.createElement("option");
+            option.value = alumno.nombre;
+            option.textContent = alumno.nombre;
+            alumnosTarea.appendChild(option);
+        });
 }
 
-//MOSTRAR GRUPOS
+//GRUPOS
 let initialGroups = [];
 let selectedGroup = null;
 getGroups();
@@ -307,6 +316,7 @@ function getGroups() {
         })
         .fail((error) => alert(error));
 }
+
 function renderGroups(filter = "") {
     listaGrupos.innerHTML = "";
     groupSelectionList.innerHTML = "";
@@ -338,6 +348,15 @@ function renderGroups(filter = "") {
                 selectGroup(grupo);
             };
             groupSelectionList.appendChild(div);
+        });
+    selectedGrupoDiv = null;
+    initialGroups
+        .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(grupo => {
+            const option = document.createElement("option");
+            option.value = grupo.nombre;
+            option.textContent = grupo.nombre;
+            gruposTarea.appendChild(option);
         });
 }
 function selectGroup(grupo){
