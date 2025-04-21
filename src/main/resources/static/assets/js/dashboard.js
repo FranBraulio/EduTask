@@ -24,6 +24,9 @@ const closeGroupButtons = document.querySelectorAll('.close-group-button');
 const addGroupForm = document.getElementById('addGroupForm');
 const individualSelectionList = document.getElementById('individual-selection-list');
 const buscarIndividuosGrupoInput = document.getElementById('buscar-individuos-grupo');
+const profesorGrupoSelectionList = document.getElementById('profesor-grupo-selection-list');
+const buscarProfesorGrupoInput = document.getElementById('buscar-profesor-grupo');
+
 
 // =================== Funciones reutilizables ===================
 
@@ -69,7 +72,6 @@ function filterList(input, list, itemClass) {
 // =================== Modal: Añadir Individuo ===================
 
 addIndividualBtn.addEventListener('click', () => {
-    groupSelectionList.innerHTML = '';
     document.querySelectorAll('#lista-grupos .grupo-item').forEach(grupo => {
         const nombreGrupo = grupo.textContent.trim();
         const radioItem = document.createElement('div');
@@ -101,9 +103,7 @@ addIndividualForm.addEventListener('submit', e => {
     const apellido = document.getElementById("apellido-individual").value;
     const telefono = document.getElementById('telefono-individual').value;
     const profesor = selectProfesor;
-    //CUANDO TENGAS CONFIGURADO LOS GRUPOS AÑADELO AQUI
-    const grupo = null;
-console.log(username)
+    const grupo = selectedGroup;
     // Crear objeto con los datos del usuario
     let alumnoData = {nombre, apellido, telefono, profesor, grupo };
     $.ajax({
@@ -125,7 +125,6 @@ console.log(username)
 // =================== Modal: Añadir Grupo ===================
 
 addGroupBtn.addEventListener('click', () => {
-    individualSelectionList.innerHTML = '';
     document.querySelectorAll('#lista-individuales .individual-item').forEach(ind => {
         const nombre = ind.textContent.trim();
         const item = document.createElement('div');
@@ -143,21 +142,22 @@ window.addEventListener('click', e => { if (e.target === addGroupModal) addGroup
 
 addGroupForm.addEventListener('submit', e => {
     e.preventDefault();
-    const nombreGrupo = document.getElementById('nombre-grupo').value;
-    const seleccionados = Array.from(individualSelectionList.querySelectorAll('input:checked'))
-        .map(cb => cb.value);
-
-    console.log('Nuevo grupo:', nombreGrupo, 'con individuos:', seleccionados);
-
-    const btn = createListButton({
-        text: nombreGrupo,
-        iconClass: 'bi bi-tag-fill',
-        classes: ['grupo-item']
+    const nombre = document.getElementById('nombre-grupo').value;
+    const alumnos = null;
+    const profesor = selectProfesor;
+    let grupoData = {nombre, alumnos, profesor};
+    $.ajax({
+        url: '/grupo/create',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(grupoData),
+        success: function (response) {
+            window.location.href = '/dashboard.html';
+        },
+        error: function (xhr, status, error) {
+            console.log("Error")
+        }
     });
-
-    listaGrupos.appendChild(btn);
-    addGroupModal.style.display = "none";
-    addGroupForm.reset();
 });
 
 // =================== Filtros de búsqueda ===================
@@ -192,17 +192,9 @@ buscarProfesorIndividualInput.addEventListener('keyup', () => {
 
 // =================== Inicialización ===================
 
-const initialGrupos = ["Grupo A", "Grupo B", "Grupo C", "Grupo D"];
-initialGrupos.forEach(grupo => {
-    const btn = createListButton({
-        text: grupo,
-        iconClass: 'bi bi-tag-fill',
-        classes: ['grupo-item']
-    });
-    listaGrupos.appendChild(btn);
-});
 
 //Metodo get para sacar los profesores
+
 // Definimos un array vacío para almacenar los usuarios
 let initialProfesores = [];
 let selectProfesor = null;
@@ -223,7 +215,6 @@ function getUsers() {
 
 function renderUsers(filter = "") {
     profesorSelectionList.innerHTML = "";
-
     initialProfesores
         .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
         .forEach(user => {
@@ -233,7 +224,16 @@ function renderUsers(filter = "") {
             div.style.cursor = "pointer";
             div.onclick = () => selectUser(user);
             profesorSelectionList.appendChild(div);
-            console.log(selectUser(user))
+        });
+    initialProfesores
+        .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(user => {
+            const div = document.createElement("div");
+            div.className = "user-item p-1 border-bottom";
+            div.textContent = user.username;
+            div.style.cursor = "pointer";
+            div.onclick = () => selectUser(user);
+            profesorGrupoSelectionList.appendChild(div);
         });
 }
 
@@ -258,15 +258,65 @@ function renderAlumnos(filter = "") {
     initialIndividuales
         .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
         .forEach(alumno => {
-            console.log("entra")
             const div = document.createElement("div");
             div.className = "user-item p-1 border-bottom";
             div.textContent = alumno.nombre;
             div.style.cursor = "pointer";
             listaIndividuales.appendChild(div);
         });
+    //Lista alumnos del popUp de grupos
+    initialIndividuales
+        .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(alumno => {
+            const div = document.createElement("div");
+            div.className = "user-item p-1 border-bottom";
+            div.textContent = alumno.nombre;
+            div.style.cursor = "pointer";
+            individualSelectionList.appendChild(div);
+        });
 }
 
+//MOSTRAR GRUPOS
+let initialGroups = [];
+let selectedGroup = null;
+getGroups();
+function getGroups() {
+    $.get("/grupos", (data) => {})
+        .done((data) => {
+            initialGroups = data;
+            console.log(initialGroups)
+            renderGroups();
+        })
+        .fail((error) => alert(error));
+}
+function renderGroups(filter = "") {
+    initialGroups
+        .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(grupo => {
+            const div = document.createElement("div");
+            div.className = "user-item p-1 border-bottom";
+            div.textContent = grupo.nombre;
+            div.style.cursor = "pointer";
+            listaGrupos.appendChild(div);
+        });
+    //Lista de grupos en el PopUp de individuos
+    initialGroups
+        .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(grupo => {
+            const div = document.createElement("div");
+            div.className = "user-item p-1 border-bottom";
+            div.textContent = grupo.nombre;
+            div.style.cursor = "pointer";
+            div.onclick = () => selectGroup(grupo);
+            groupSelectionList.appendChild(div);
+        });
+}
+function selectGroup(grupo){
+    selectedGroup = grupo;
+    return selectedGroup;
+}
+
+//NOMBRE DEL TITULO
 $(document).ready(function () {
     // Se realiza una solicitud AJAX a la URL "/user"
     $.ajax({
