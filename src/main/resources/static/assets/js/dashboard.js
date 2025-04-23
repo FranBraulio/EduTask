@@ -183,8 +183,10 @@ document.getElementById('form-tarea').addEventListener('submit', function (e) {
         contentType: 'application/json',
         data: JSON.stringify(tareaData),
         success: function (response) {
-            // Redirige al dashboard o muestra mensaje
-            window.location.reload();
+            // Aqui se puede mostrar un mensaje
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
         },
         error: function (xhr, status, error) {
             console.error("Error al crear la tarea:", error);
@@ -294,7 +296,7 @@ function renderTareas(filter = "") {
             const enlace = document.createElement("a");
             enlace.href = "#";
             enlace.className = "list-group-item list-group-item-action historial-item";
-            enlace.innerHTML = `<i class="bi bi-check-all"></i>${tarea.mensaje} - ${tarea.fecha_fin}`;
+            enlace.innerHTML = `<i class="bi bi-check-all"></i> ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'}`;
             listaHistorial.appendChild(enlace);
         });
 }
