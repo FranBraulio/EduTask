@@ -21,4 +21,12 @@ public class GrupoService {
         return grupoRepository.findAll();
     }
 
+    public Grupo findById(Long id) {
+        return grupoRepository.findById(id).get();
+    }
+
+    public void deleteGrupo(Long id) {
+        grupoRepository.deleteById(id);
+    }
+
 }

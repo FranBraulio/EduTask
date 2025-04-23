@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Grupo</title>
+
+  <!-- Bootstrap y estilos -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/assets/css/dashboard.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/js/header.js"></script>
+  <script src="/assets/js/editarGrupo.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="header">
+    <div class="header-content">
+      <h1 id="username"></h1>
+      <a href="/usuario.html"><i class="bi bi-person-fill"></i> Usuario</a>
+      <a href="/dashboard.html"><i class="bi bi-house-fill"></i> Volver al Inicio</a>
+    </div>
+  </div>
+</header>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-6">
+      <h2 class="mb-4"><i class="bi bi-people-fill"></i> Editar Grupo</h2>
+      <form id="form-editar-grupo" method="post" th:action="@{/grupo/editar}" th:object="${grupo}">
+        <input type="hidden" id="id" name="id" th:value="${grupo.id}" />
+
+        <!-- Nombre -->
+        <div class="mb-3">
+          <label for="nombre" class="form-label"><i class="bi bi-pencil-fill"></i> Nombre del Grupo</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" th:value="${grupo.nombre}" required>
+        </div>
+
+        <!-- Profesor -->
+        <div class="mb-3">
+          <label for="profesor" class="form-label"><i class="bi bi-person-badge-fill"></i> Profesor</label>
+          <select class="form-select" id="profesor" name="profesor.id" required>
+            <option th:each="profesor : ${profesores}"
+                    th:value="${profesor.id}"
+                    th:text="${profesor.username}"
+                    th:selected="${profesor.id == grupo.profesor.id}">
+            </option>
+          </select>
+        </div>
+
+        <!-- Botones -->
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save-fill"></i> Guardar Cambios</button>
+        <button type="button" class="btn btn-danger" id="button-eliminar-grupo"><i class="bi bi-trash-fill"></i> Eliminar Grupo</button>
+      </form>
+    </div>
+
+    <!-- Lista de alumnos del grupo -->
+    <div class="col-lg-6 mt-5 mt-lg-0">
+      <h3><i class="bi bi-person-lines-fill"></i> Alumnos del Grupo</h3>
+      <div th:if="${#lists.isEmpty(grupo.alumnos)}">
+        <p class="text-muted">Este grupo no tiene alumnos asignados.</p>
+      </div>
+      <table class="table table-striped" th:if="${!#lists.isEmpty(grupo.alumnos)}">
+        <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Teléfono</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="alumno : ${grupo.alumnos}">
+          <td th:text="${alumno.nombre}"></td>
+          <td th:text="${alumno.apellido}"></td>
+          <td th:text="${alumno.telefono}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

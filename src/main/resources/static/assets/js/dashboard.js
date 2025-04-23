@@ -31,37 +31,6 @@ $(document).ready(function () {
 
 
 // =================== Funciones reutilizables ===================
-
-    function createListButton({text, iconClass, classes = [], clickHandler}) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.classList.add('list-group-item', 'list-group-item-action', ...classes);
-        btn.innerHTML = `<i class="${iconClass}"></i> ${text}`;
-        btn.addEventListener('click', () => {
-            updateActiveClass(btn);
-            syncSelectWithItem(text);
-        });
-        clickHandler?.(btn);
-        return btn;
-    }
-
-    function updateActiveClass(activeEl) {
-        document.querySelectorAll('.list-group-item-action').forEach(el => el.classList.remove('active'));
-        activeEl.classList.add('active');
-    }
-
-    function syncSelectWithItem(selectedValue) {
-        for (let i = 0; i < asignarSelect.options.length; i++) {
-            const option = asignarSelect.options[i];
-            if (option.textContent === selectedValue ||
-                (selectedValue.startsWith('Grupo') && option.value.startsWith('grupo')) ||
-                (selectedValue.startsWith('Persona') && option.value.startsWith('individual'))) {
-                asignarSelect.value = option.value;
-                break;
-            }
-        }
-    }
-
     function filterList(input, list, itemClass) {
         const filter = input.value.toUpperCase();
         const items = list.getElementsByClassName(itemClass);
@@ -425,11 +394,17 @@ $(document).ready(function () {
         initialGroups
             .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
             .forEach(grupo => {
+                const enlace = document.createElement("a")
+                enlace.href = `/grupo/edit/${grupo.id}`
+                enlace.style.textDecoration = "none"
+                enlace.style.color = "inherit"
+                listaGrupos.appendChild(enlace);
+
                 const div = document.createElement("div");
                 div.className = "user-item p-1 border-bottom";
                 div.textContent = grupo.nombre;
                 div.style.cursor = "pointer";
-                listaGrupos.appendChild(div);
+                enlace.appendChild(div);
             });
         //Lista de grupos en el PopUp de individuos
         let selectedGrupoDiv = null;
