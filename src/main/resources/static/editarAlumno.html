@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Alumno</title>
+
+  <!-- Importación de Bootstrap y Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/header.js"></script>
+
+</head>
+<body>
+<!-- Cabecera -->
+<header>
+  <div class="header">
+    <div class="header-content">
+      <h1 id="username"></h1>
+      <a href="usuario.html"><i class="bi bi-person-fill"></i> Usuario</a>
+      <a href="/logout"><i class="bi bi-house-fill"></i> Volver al Inicio</a>
+    </div>
+  </div>
+</header>
+
+<!-- Contenedor principal -->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-6">
+      <h2 class="mb-4"><i class="bi bi-person-fill"></i> Editar Alumno</h2>
+      <form method="POST" action="/alumnos/editar" id="form-editar-alumno">
+        <!-- Campo Nombre -->
+        <div class="mb-3">
+          <label for="nombre" class="form-label"><i class="bi bi-person-fill"></i> Nombre</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" value="{{alumno.nombre}}" required>
+        </div>
+
+        <!-- Campo Apellido -->
+        <div class="mb-3">
+          <label for="apellido" class="form-label"><i class="bi bi-person-fill"></i> Apellido</label>
+          <input type="text" class="form-control" id="apellido" name="apellido" value="{{alumno.apellido}}" required>
+        </div>
+
+        <!-- Campo Teléfono -->
+        <div class="mb-3">
+          <label for="telefono" class="form-label"><i class="bi bi-telephone-fill"></i> Teléfono</label>
+          <input type="text" class="form-control" id="telefono" name="telefono" value="{{alumno.telefono}}" required>
+        </div>
+
+        <!-- Campo Profesor -->
+        <div class="mb-3">
+          <label for="profesor" class="form-label"><i class="bi bi-person-check-fill"></i> Profesor</label>
+          <select class="form-select" id="profesor" name="profesor" required>
+            <option value="" selected>Seleccione un Profesor</option>
+            <!-- Se agregan los profesores desde el servidor -->
+            <option value="{{profesor.id}}" selected>{{profesor.nombre}}</option>
+            <option value="1">Profesor A</option>
+            <option value="2">Profesor B</option>
+          </select>
+        </div>
+
+        <!-- Campo Grupo -->
+        <div class="mb-3">
+          <label for="grupo" class="form-label"><i class="bi bi-tag-fill"></i> Grupo</label>
+          <select class="form-select" id="grupo" name="grupo" required>
+            <option value="" selected>Seleccione un Grupo</option>
+            <!-- Se agregan los grupos desde el servidor -->
+            <option value="{{grupo.id}}" selected>{{grupo.nombre}}</option>
+            <option value="1">Grupo A</option>
+            <option value="2">Grupo B</option>
+          </select>
+        </div>
+
+        <!-- Campo oculto para el ID -->
+        <input type="hidden" name="id" value="{{alumno.id}}">
+
+        <!-- Botón para guardar cambios -->
+        <button type="submit" class="btn btn-primary btn-block"><i class="bi bi-save-fill"></i> Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
