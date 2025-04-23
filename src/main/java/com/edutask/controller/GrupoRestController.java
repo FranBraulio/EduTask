@@ -1,8 +1,6 @@
 package com.edutask.controller;
 
-import com.edutask.entities.Alumno;
 import com.edutask.entities.Grupo;
-import com.edutask.service.AlumnoService;
 import com.edutask.service.GrupoService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -14,11 +12,11 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-public class GrupoController {
+public class GrupoRestController {
 
     private final GrupoService grupoService;
 
-    public GrupoController(GrupoService grupoService) {
+    public GrupoRestController(GrupoService grupoService) {
         this.grupoService = grupoService;
     }
 

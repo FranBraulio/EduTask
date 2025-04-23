@@ -1,34 +1,58 @@
 package com.edutask.controller;
 
 import com.edutask.entities.Alumno;
+import com.edutask.entities.Grupo;
+import com.edutask.entities.Profesor;
 import com.edutask.service.AlumnoService;
+import com.edutask.service.GrupoService;
+import com.edutask.service.ProfesorService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.List;
 
-@RestController
+@Controller
+@RequestMapping("/alumno")
 @CrossOrigin("*")
 public class AlumnoController {
     private final AlumnoService alumnoService;
+    private final ProfesorService profesorService;
+    private final GrupoService grupoService;
 
-    public AlumnoController(AlumnoService alumnoService) {
+    public AlumnoController(AlumnoService alumnoService, ProfesorService profesorService, GrupoService grupoService) {
         this.alumnoService = alumnoService;
+        this.profesorService = profesorService;
+        this.grupoService = grupoService;
     }
 
-    @PostMapping("/alumno/create")
-    @Transactional
-    ResponseEntity<?> create(@RequestBody Alumno alumno) {
-        alumnoService.saveAlumno(alumno);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Alumno creado con éxito");
+    @GetMapping("/edit/{id}")
+    public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
+        Alumno alumno = alumnoService.findById(id);
+        if (alumno == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Alumno no encontrado");
+        }
+
+        List<Profesor> profesores = profesorService.findAll();
+        List<Grupo> grupos = grupoService.findAll();
+
+        model.addAttribute("alumno", alumno);
+        model.addAttribute("profesores", profesores);
+        model.addAttribute("grupos", grupos);
+
+        return "editarAlumno";
     }
 
-    //Metodo para sacar todos los alumnos
-    @GetMapping("/alumnos")
-    public List<Alumno> users() {
-        return alumnoService.findAll();
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<String> deleteAlumno(@PathVariable("id") Long id) {
+        alumnoService.deleteById(id);
+        return ResponseEntity.ok("Alumno eliminado correctamente");
     }
+
 
 }

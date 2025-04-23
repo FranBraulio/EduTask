@@ -9,7 +9,7 @@ $(document).ready(function () {
             try {
                 const jsonData = JSON.parse(data);
                 console.log("JSON parseado:", jsonData);
-                $("#username").text(`${jsonData[0]}`);
+                $("#nombre").text(`${jsonData[0]}`);
                 $("#email").text(`${jsonData[1]}`);
             } catch (e) {
                 console.error("Error al parsear JSON:", e);

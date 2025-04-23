@@ -354,11 +354,18 @@ $(document).ready(function () {
         initialIndividuales
             .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
             .forEach(alumno => {
+                const enlace = document.createElement("a")
+                enlace.href = `/alumno/edit/${alumno.id}`
+                enlace.style.textDecoration = "none"
+                enlace.style.color = "inherit"
+
+                listaIndividuales.appendChild(enlace);
+
                 const div = document.createElement("div");
                 div.className = "user-item p-1 border-bottom";
                 div.textContent = alumno.nombre;
                 div.style.cursor = "pointer";
-                listaIndividuales.appendChild(div);
+                enlace.appendChild(div);
             });
         //Lista alumnos del popUp de grupos
         initialIndividuales

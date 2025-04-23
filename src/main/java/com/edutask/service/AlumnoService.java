@@ -20,4 +20,12 @@ public class AlumnoService {
         return alumnoRepository.findAll();
     }
 
+    public Alumno findById(Long id) {
+        return alumnoRepository.findById(id).get();
+    }
+
+    public void deleteById(Long id) {
+        alumnoRepository.deleteById(id);
+    }
+
 }
