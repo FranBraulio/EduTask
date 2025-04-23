@@ -24,8 +24,6 @@ $(document).ready(function () {
     const addGroupBtn = document.getElementById('add-group-btn');
     const closeGroupButtons = document.querySelectorAll('.close-group-button');
     const addGroupForm = document.getElementById('addGroupForm');
-    const individualSelectionList = document.getElementById('individual-selection-list');
-    const buscarIndividuosGrupoInput = document.getElementById('buscar-individuos-grupo');
     const profesorGrupoSelectionList = document.getElementById('profesor-grupo-selection-list');
     const buscarProfesorGrupoInput = document.getElementById('buscar-profesor-grupo');
 
@@ -98,15 +96,6 @@ $(document).ready(function () {
 // =================== Modal: Añadir Grupo ===================
 
     addGroupBtn.addEventListener('click', () => {
-        document.querySelectorAll('#lista-individuales .individual-item').forEach(ind => {
-            const nombre = ind.textContent.trim();
-            const item = document.createElement('div');
-            item.classList.add('individual-checkbox-item');
-            item.innerHTML = `
-            <input type="checkbox" value="${nombre}">
-            <label>${nombre}</label>`;
-            individualSelectionList.appendChild(item);
-        });
         addGroupModal.style.display = "block";
     });
 
@@ -192,7 +181,6 @@ $(document).ready(function () {
     individualInput.addEventListener('keyup', () => renderAlumnos(individualInput.value));
     historialInput.addEventListener('keyup', () => filterList(historialInput, listaHistorial, 'historial-item'));
 
-    buscarIndividuosGrupoInput.addEventListener('keyup', () => renderAlumnos(buscarIndividuosGrupoInput.value));
     buscarGruposIndividualInput.addEventListener('keyup', () => renderGroups(buscarGruposIndividualInput.value));
     buscarProfesorIndividualInput.addEventListener('keyup', () => renderUsers(buscarProfesorIndividualInput.value));
     buscarProfesorGrupoInput.addEventListener('keyup', () => renderUsers(buscarProfesorGrupoInput.value));
@@ -319,7 +307,6 @@ $(document).ready(function () {
 
     function renderAlumnos(filter = "") {
         listaIndividuales.innerHTML = "";
-        individualSelectionList.innerHTML = "";
         initialIndividuales
             .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
             .forEach(alumno => {
@@ -335,31 +322,6 @@ $(document).ready(function () {
                 div.textContent = alumno.nombre;
                 div.style.cursor = "pointer";
                 enlace.appendChild(div);
-            });
-        //Lista alumnos del popUp de grupos
-        initialIndividuales
-            .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
-            .forEach(alumno => {
-                const div = document.createElement("div");
-                div.className = "user-item p-1 border-bottom";
-                div.textContent = alumno.nombre;
-                div.style.cursor = "pointer";
-
-                div.onclick = () => {
-                    const index = selectedAlumnos.indexOf(alumno);
-
-                    if (index === -1) {
-                        // No está seleccionado, lo agregamos
-                        selectedAlumnos.push(alumno);
-                        div.style.backgroundColor = "rgba(0, 123, 255, 0.2)";
-                    } else {
-                        // Ya está seleccionado, lo quitamos
-                        selectedAlumnos.splice(index, 1);
-                        div.style.backgroundColor = "";
-                    }
-                };
-
-                individualSelectionList.appendChild(div);
             });
         initialIndividuales
             .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
