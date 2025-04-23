@@ -9,7 +9,7 @@ import lombok.Setter;
 @Table(name = "Alumno_Tarea")
 @Getter
 @Setter
-public class Alumno_Tarea {
+public class AlumnoTarea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,5 +21,6 @@ public class Alumno_Tarea {
 
     @ManyToOne
     @JoinColumn(name = "Tarea_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private Tarea tarea;
 }

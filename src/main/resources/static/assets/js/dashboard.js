@@ -162,6 +162,38 @@ addGroupForm.addEventListener('submit', e => {
     });
 });
 
+document.getElementById('form-tarea').addEventListener('submit', function (e) {
+    e.preventDefault();
+    let buttonTarea = document.getElementById("button-tarea");
+    buttonTarea.disabled = true;
+
+    const descripcion = document.getElementById('descripcion').value;
+    const fecha_limite = document.getElementById('fecha_limite').value;
+    const asignar_a = document.getElementById('asignar_a').value;
+
+    let tareaData = {
+        descripcion,
+        fecha_limite,
+        asignar_a
+    };
+
+    $.ajax({
+        url: '/tareas/crear',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(tareaData),
+        success: function (response) {
+            // Redirige al dashboard o muestra mensaje
+            window.location.reload();
+        },
+        error: function (xhr, status, error) {
+            console.error("Error al crear la tarea:", error);
+            buttonTarea.disabled = false;
+        }
+    });
+});
+
+
 // =================== Filtros de búsqueda ===================
 
 grupoInput.addEventListener('keyup', () => renderGroups(grupoInput.value));
@@ -244,6 +276,29 @@ function selectUser(user){
     return selectProfesor;
 }
 
+//HISTORIAL DE TAREAS
+let initialTareas = [];
+getTareas();
+function getTareas() {
+    $.get("/tareas/history", (data) => {})
+        .done((data) => {
+            initialTareas = data;
+            renderTareas();
+        })
+        .fail((error) => alert(error));
+}
+function renderTareas(filter = "") {
+    listaHistorial.innerHTML = "";
+    initialTareas
+        .forEach(tarea => {
+            const enlace = document.createElement("a");
+            enlace.href = "#";
+            enlace.className = "list-group-item list-group-item-action historial-item";
+            enlace.innerHTML = `<i class="bi bi-check-all"></i>${tarea.mensaje} - ${tarea.fecha_fin}`;
+            listaHistorial.appendChild(enlace);
+        });
+}
+
 //INDIVIDUOS / ALUMNOS
 let initialIndividuales = [];
 getAlumnos();
@@ -297,7 +352,7 @@ function renderAlumnos(filter = "") {
         .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
         .forEach(alumno => {
             const option = document.createElement("option");
-            option.value = alumno.nombre;
+            option.value = alumno.id;
             option.textContent = alumno.nombre;
             alumnosTarea.appendChild(option);
         });

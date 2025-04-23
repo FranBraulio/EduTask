@@ -25,7 +25,7 @@ public class AlumnoController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Alumno creado con éxito");
     }
 
-    //Metodo para sacar todos los profesores
+    //Metodo para sacar todos los alumnos
     @GetMapping("/alumnos")
     public List<Alumno> users() {
         return alumnoService.findAll();

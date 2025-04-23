@@ -3,6 +3,7 @@ package com.edutask.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Table(name = "Alumno")
 @Getter
 @Setter
+@ToString
 public class Alumno {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +36,5 @@ public class Alumno {
     private Grupo grupo;
 
     @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Alumno_Tarea> alumnoTarea = new HashSet<>();
+    private Set<AlumnoTarea> alumnoTarea = new HashSet<>();
 }

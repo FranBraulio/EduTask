@@ -28,5 +28,5 @@ public class Tarea {
     private Profesor profesor;
 
     @OneToMany(mappedBy = "tarea", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Alumno_Tarea> alumnoTarea = new HashSet<>();
+    private Set<AlumnoTarea> alumnoTarea = new HashSet<>();
 }
