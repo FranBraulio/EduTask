@@ -69,5 +69,11 @@ public class TareaController {
         return tareaService.findAll();
     }
 
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<String> deleteTarea(@PathVariable("id") Long id) {
+        tareaService.deleteById(id);
+        return ResponseEntity.ok("Tarea eliminada correctamente");
+    }
+
 }
 

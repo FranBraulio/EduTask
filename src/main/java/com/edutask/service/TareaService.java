@@ -1,8 +1,6 @@
 package com.edutask.service;
 
-import com.edutask.entities.Alumno;
 import com.edutask.entities.Tarea;
-import com.edutask.repository.AlumnoRepository;
 import com.edutask.repository.TareaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,10 @@ public class TareaService {
 
     public List<Tarea> findAll() {
         return tareaRepository.findAll();
+    }
+
+    public void deleteById(Long id) {
+        tareaRepository.deleteById(id);
     }
 
 }

@@ -1,211 +1,232 @@
-// Elementos generales
-const grupoInput = document.getElementById('buscar-grupos');
-const individualInput = document.getElementById('buscar-individuales');
-const historialInput = document.getElementById('buscar-historial');
-const listaGrupos = document.getElementById('lista-grupos');
-const listaIndividuales = document.getElementById('lista-individuales');
-const listaHistorial = document.getElementById('lista-historial');
-const asignarSelect = document.getElementById('asignar_a');
-const gruposTarea = document.getElementById("gruposTarea");
-const alumnosTarea = document.getElementById("alumnosTarea");
+$(document).ready(function () {
+    const grupoInput = document.getElementById('buscar-grupos');
+    const individualInput = document.getElementById('buscar-individuales');
+    const historialInput = document.getElementById('buscar-historial');
+    const listaGrupos = document.getElementById('lista-grupos');
+    const listaIndividuales = document.getElementById('lista-individuales');
+    const listaHistorial = document.getElementById('lista-historial');
+    const asignarSelect = document.getElementById('asignar_a');
+    const gruposTarea = document.getElementById("gruposTarea");
+    const alumnosTarea = document.getElementById("alumnosTarea");
 
 // MODAL: Añadir Individuo
-const addIndividualModal = document.getElementById('addIndividualModal');
-const addIndividualBtn = document.getElementById('add-individual-btn');
-const closeButtons = document.querySelectorAll('.close-button');
-const addIndividualForm = document.getElementById('addIndividualForm');
-const groupSelectionList = document.getElementById('group-selection-list');
-const buscarGruposIndividualInput = document.getElementById('buscar-grupos-individual');
-const profesorSelectionList = document.getElementById('profesor-selection-list');
-const buscarProfesorIndividualInput = document.getElementById('buscar-profesor-individual');
+    const addIndividualModal = document.getElementById('addIndividualModal');
+    const addIndividualBtn = document.getElementById('add-individual-btn');
+    const closeButtons = document.querySelectorAll('.close-button');
+    const addIndividualForm = document.getElementById('addIndividualForm');
+    const groupSelectionList = document.getElementById('group-selection-list');
+    const buscarGruposIndividualInput = document.getElementById('buscar-grupos-individual');
+    const profesorSelectionList = document.getElementById('profesor-selection-list');
+    const buscarProfesorIndividualInput = document.getElementById('buscar-profesor-individual');
 
 // MODAL: Añadir Grupo
-const addGroupModal = document.getElementById('addGroupModal');
-const addGroupBtn = document.getElementById('add-group-btn');
-const closeGroupButtons = document.querySelectorAll('.close-group-button');
-const addGroupForm = document.getElementById('addGroupForm');
-const individualSelectionList = document.getElementById('individual-selection-list');
-const buscarIndividuosGrupoInput = document.getElementById('buscar-individuos-grupo');
-const profesorGrupoSelectionList = document.getElementById('profesor-grupo-selection-list');
-const buscarProfesorGrupoInput = document.getElementById('buscar-profesor-grupo');
+    const addGroupModal = document.getElementById('addGroupModal');
+    const addGroupBtn = document.getElementById('add-group-btn');
+    const closeGroupButtons = document.querySelectorAll('.close-group-button');
+    const addGroupForm = document.getElementById('addGroupForm');
+    const individualSelectionList = document.getElementById('individual-selection-list');
+    const buscarIndividuosGrupoInput = document.getElementById('buscar-individuos-grupo');
+    const profesorGrupoSelectionList = document.getElementById('profesor-grupo-selection-list');
+    const buscarProfesorGrupoInput = document.getElementById('buscar-profesor-grupo');
 
 
 // =================== Funciones reutilizables ===================
 
-function createListButton({ text, iconClass, classes = [], clickHandler }) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.classList.add('list-group-item', 'list-group-item-action', ...classes);
-    btn.innerHTML = `<i class="${iconClass}"></i> ${text}`;
-    btn.addEventListener('click', () => {
-        updateActiveClass(btn);
-        syncSelectWithItem(text);
-    });
-    clickHandler?.(btn);
-    return btn;
-}
+    function createListButton({text, iconClass, classes = [], clickHandler}) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.classList.add('list-group-item', 'list-group-item-action', ...classes);
+        btn.innerHTML = `<i class="${iconClass}"></i> ${text}`;
+        btn.addEventListener('click', () => {
+            updateActiveClass(btn);
+            syncSelectWithItem(text);
+        });
+        clickHandler?.(btn);
+        return btn;
+    }
 
-function updateActiveClass(activeEl) {
-    document.querySelectorAll('.list-group-item-action').forEach(el => el.classList.remove('active'));
-    activeEl.classList.add('active');
-}
+    function updateActiveClass(activeEl) {
+        document.querySelectorAll('.list-group-item-action').forEach(el => el.classList.remove('active'));
+        activeEl.classList.add('active');
+    }
 
-function syncSelectWithItem(selectedValue) {
-    for (let i = 0; i < asignarSelect.options.length; i++) {
-        const option = asignarSelect.options[i];
-        if (option.textContent === selectedValue ||
-            (selectedValue.startsWith('Grupo') && option.value.startsWith('grupo')) ||
-            (selectedValue.startsWith('Persona') && option.value.startsWith('individual'))) {
-            asignarSelect.value = option.value;
-            break;
+    function syncSelectWithItem(selectedValue) {
+        for (let i = 0; i < asignarSelect.options.length; i++) {
+            const option = asignarSelect.options[i];
+            if (option.textContent === selectedValue ||
+                (selectedValue.startsWith('Grupo') && option.value.startsWith('grupo')) ||
+                (selectedValue.startsWith('Persona') && option.value.startsWith('individual'))) {
+                asignarSelect.value = option.value;
+                break;
+            }
         }
     }
-}
 
-function filterList(input, list, itemClass) {
-    const filter = input.value.toUpperCase();
-    const items = list.getElementsByClassName(itemClass);
-    for (let item of items) {
-        const text = item.textContent.toUpperCase();
-        item.style.display = text.includes(filter) ? "" : "none";
+    function filterList(input, list, itemClass) {
+        const filter = input.value.toUpperCase();
+        const items = list.getElementsByClassName(itemClass);
+        for (let item of items) {
+            const text = item.textContent.toUpperCase();
+            item.style.display = text.includes(filter) ? "" : "none";
+        }
     }
-}
 
 // =================== Modal: Añadir Individuo ===================
 
-addIndividualBtn.addEventListener('click', () => {
-    document.querySelectorAll('#lista-grupos .grupo-item').forEach(grupo => {
-        const nombreGrupo = grupo.textContent.trim();
-        const radioItem = document.createElement('div');
-        radioItem.classList.add('group-radio-item');
-        radioItem.innerHTML = `
+    addIndividualBtn.addEventListener('click', () => {
+        document.querySelectorAll('#lista-grupos .grupo-item').forEach(grupo => {
+            const nombreGrupo = grupo.textContent.trim();
+            const radioItem = document.createElement('div');
+            radioItem.classList.add('group-radio-item');
+            radioItem.innerHTML = `
             <input type="radio" name="grupo-seleccionado" value="${nombreGrupo}">
             <label>${nombreGrupo}</label>`;
-        groupSelectionList.appendChild(radioItem);
-    });
+            groupSelectionList.appendChild(radioItem);
+        });
 
-    document.querySelectorAll('#lista-grupos .profesor-item').forEach(profe => {
-        const nombreProfe = profe.textContent.trim();
-        const radioItem = document.createElement('div');
-        radioItem.classList.add('group-radio-item');
-        radioItem.innerHTML = `
+        document.querySelectorAll('#lista-grupos .profesor-item').forEach(profe => {
+            const nombreProfe = profe.textContent.trim();
+            const radioItem = document.createElement('div');
+            radioItem.classList.add('group-radio-item');
+            radioItem.innerHTML = `
             <input type="radio" name="grupo-seleccionado" value="${nombreProfe}">
             <label>${nombreProfe}</label>`;
-        profesorSelectionList.appendChild(radioItem);
+            profesorSelectionList.appendChild(radioItem);
+        });
+        addIndividualModal.style.display = "block";
     });
-    addIndividualModal.style.display = "block";
-});
 
-closeButtons.forEach(btn => btn.addEventListener('click', () => addIndividualModal.style.display = "none"));
-window.addEventListener('click', e => { if (e.target === addIndividualModal) addIndividualModal.style.display = "none" });
-
-addIndividualForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const nombre = document.getElementById('nombre-individual').value;
-    const apellido = document.getElementById("apellido-individual").value;
-    const telefono = document.getElementById('telefono-individual').value;
-    const profesor = selectProfesor;
-    const grupo = selectedGroup;
-    // Crear objeto con los datos del usuario
-    let alumnoData = {nombre, apellido, telefono, profesor, grupo };
-    $.ajax({
-        url: '/alumno/create', // URL del endpoint de registro
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(alumnoData), // Convertir el objeto a JSON
-        success: function (response) {
-            // Si el registro es exitoso
-
-            window.location.href = '/dashboard.html'; // Redireccionar al formulario de login
-        },
-        error: function (xhr, status, error) {
-            console.log("Error")
-        }
+    closeButtons.forEach(btn => btn.addEventListener('click', () => addIndividualModal.style.display = "none"));
+    window.addEventListener('click', e => {
+        if (e.target === addIndividualModal) addIndividualModal.style.display = "none"
     });
-});
+
+    addIndividualForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre-individual').value;
+        const apellido = document.getElementById("apellido-individual").value;
+        const telefono = document.getElementById('telefono-individual').value;
+        const profesor = selectProfesor;
+        const grupo = selectedGroup;
+        // Crear objeto con los datos del usuario
+        let alumnoData = {nombre, apellido, telefono, profesor, grupo};
+        $.ajax({
+            url: '/alumno/create', // URL del endpoint de registro
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(alumnoData), // Convertir el objeto a JSON
+            success: function (response) {
+                // Si el registro es exitoso
+
+                window.location.href = '/dashboard.html'; // Redireccionar al formulario de login
+            },
+            error: function (xhr, status, error) {
+                console.log("Error")
+            }
+        });
+    });
 
 // =================== Modal: Añadir Grupo ===================
 
-addGroupBtn.addEventListener('click', () => {
-    document.querySelectorAll('#lista-individuales .individual-item').forEach(ind => {
-        const nombre = ind.textContent.trim();
-        const item = document.createElement('div');
-        item.classList.add('individual-checkbox-item');
-        item.innerHTML = `
+    addGroupBtn.addEventListener('click', () => {
+        document.querySelectorAll('#lista-individuales .individual-item').forEach(ind => {
+            const nombre = ind.textContent.trim();
+            const item = document.createElement('div');
+            item.classList.add('individual-checkbox-item');
+            item.innerHTML = `
             <input type="checkbox" value="${nombre}">
             <label>${nombre}</label>`;
-        individualSelectionList.appendChild(item);
+            individualSelectionList.appendChild(item);
+        });
+        addGroupModal.style.display = "block";
     });
-    addGroupModal.style.display = "block";
-});
 
-closeGroupButtons.forEach(btn => btn.addEventListener('click', () => addGroupModal.style.display = "none"));
-window.addEventListener('click', e => { if (e.target === addGroupModal) addGroupModal.style.display = "none" });
+    closeGroupButtons.forEach(btn => btn.addEventListener('click', () => addGroupModal.style.display = "none"));
+    window.addEventListener('click', e => {
+        if (e.target === addGroupModal) addGroupModal.style.display = "none"
+    });
 
-addGroupForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const nombre = document.getElementById('nombre-grupo').value;
-    const alumnos = selectedAlumnos;
-    const profesor = selectProfesor;
-    let grupoData = {nombre, alumnos, profesor};
-    $.ajax({
-        url: '/grupo/create',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(grupoData),
-        success: function (response) {
-            window.location.href = '/dashboard.html';
-        },
-        error: function (xhr, status, error) {
-            console.log("Error")
+    addGroupForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre-grupo').value;
+        const alumnos = selectedAlumnos;
+        const profesor = selectProfesor;
+        let grupoData = {nombre, alumnos, profesor};
+        $.ajax({
+            url: '/grupo/create',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(grupoData),
+            success: function (response) {
+                window.location.href = '/dashboard.html';
+            },
+            error: function (xhr, status, error) {
+                console.log("Error")
+            }
+        });
+    });
+
+    document.getElementById('form-tarea').addEventListener('submit', function (e) {
+        e.preventDefault();
+        let buttonTarea = document.getElementById("button-tarea");
+        buttonTarea.disabled = true;
+
+        const descripcion = document.getElementById('descripcion').value;
+        const fecha_limite = document.getElementById('fecha_limite').value;
+        const asignar_a = document.getElementById('asignar_a').value;
+
+        let tareaData = {
+            descripcion,
+            fecha_limite,
+            asignar_a
+        };
+
+        $.ajax({
+            url: '/tareas/crear',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(tareaData),
+            success: function (response) {
+                // Aqui se puede mostrar un mensaje
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error al crear la tarea:", error);
+                buttonTarea.disabled = false;
+            }
+        });
+    });
+
+    document.addEventListener("click", (e) => {
+        if (e.target.id === "button-Eliminar-Tarea") {
+            let id = document.getElementById("id-tarea").textContent;
+            console.log("Eliminando Tarea con ID:", id);
+
+            $.get(`tareas/delete/${id}`)
+                .done(() => {
+                    console.log("Tarea eliminada correctamente");
+                    window.location.href = "/dashboard.html";
+                })
+                .fail(() => {
+                    console.error("Error al eliminar la tarea");
+                    window.location.href = "/dashboard.html";
+                });
         }
     });
-});
-
-document.getElementById('form-tarea').addEventListener('submit', function (e) {
-    e.preventDefault();
-    let buttonTarea = document.getElementById("button-tarea");
-    buttonTarea.disabled = true;
-
-    const descripcion = document.getElementById('descripcion').value;
-    const fecha_limite = document.getElementById('fecha_limite').value;
-    const asignar_a = document.getElementById('asignar_a').value;
-
-    let tareaData = {
-        descripcion,
-        fecha_limite,
-        asignar_a
-    };
-
-    $.ajax({
-        url: '/tareas/crear',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(tareaData),
-        success: function (response) {
-            // Aqui se puede mostrar un mensaje
-            setTimeout(() => {
-                window.location.reload();
-            }, 100);
-        },
-        error: function (xhr, status, error) {
-            console.error("Error al crear la tarea:", error);
-            buttonTarea.disabled = false;
-        }
-    });
-});
 
 
 // =================== Filtros de búsqueda ===================
 
-grupoInput.addEventListener('keyup', () => renderGroups(grupoInput.value));
-individualInput.addEventListener('keyup', () => renderAlumnos(individualInput.value));
-historialInput.addEventListener('keyup', () => filterList(historialInput, listaHistorial, 'historial-item'));
+    grupoInput.addEventListener('keyup', () => renderGroups(grupoInput.value));
+    individualInput.addEventListener('keyup', () => renderAlumnos(individualInput.value));
+    historialInput.addEventListener('keyup', () => filterList(historialInput, listaHistorial, 'historial-item'));
 
-buscarIndividuosGrupoInput.addEventListener('keyup', () => renderAlumnos(buscarIndividuosGrupoInput.value));
-buscarGruposIndividualInput.addEventListener('keyup', () => renderGroups(buscarGruposIndividualInput.value));
-buscarProfesorIndividualInput.addEventListener('keyup', () => renderUsers(buscarProfesorIndividualInput.value));
-buscarProfesorGrupoInput.addEventListener('keyup', () => renderUsers(buscarProfesorGrupoInput.value));
+    buscarIndividuosGrupoInput.addEventListener('keyup', () => renderAlumnos(buscarIndividuosGrupoInput.value));
+    buscarGruposIndividualInput.addEventListener('keyup', () => renderGroups(buscarGruposIndividualInput.value));
+    buscarProfesorIndividualInput.addEventListener('keyup', () => renderUsers(buscarProfesorIndividualInput.value));
+    buscarProfesorGrupoInput.addEventListener('keyup', () => renderUsers(buscarProfesorGrupoInput.value));
 
 
 // =================== Inicialización ===================
@@ -214,234 +235,252 @@ buscarProfesorGrupoInput.addEventListener('keyup', () => renderUsers(buscarProfe
 //PROFESORES
 
 // Definimos un array vacío para almacenar los usuarios
-let initialProfesores = [];
-let selectProfesor = null;
+    let initialProfesores = [];
+    let selectProfesor = null;
 // Llamamos a la función getUsers para cargar los usuarios
-getUsers();
+    getUsers();
 
 // Función para obtener los usuarios del servidor
-function getUsers() {
-    $.get("/users", (data) => {})
-        .done((data) => {
-            // Almacenamos los usuarios obtenidos en el array
-            initialProfesores = data;
-            // Llamamos a la función renderUsers para mostrar los usuarios
-            renderUsers();
+    function getUsers() {
+        $.get("/users", (data) => {
         })
-        .fail((error) => alert(error));
-}
-let selectedProfesorDiv = null;
-function renderUsers(filter = "") {
-    profesorSelectionList.innerHTML = "";
-    profesorGrupoSelectionList.innerHTML = "";
+            .done((data) => {
+                // Almacenamos los usuarios obtenidos en el array
+                initialProfesores = data;
+                // Llamamos a la función renderUsers para mostrar los usuarios
+                renderUsers();
+            })
+            .fail((error) => alert(error));
+    }
 
-    initialProfesores
-        .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(user => {
-            const div = document.createElement("div");
-            div.className = "user-item p-1 border-bottom";
-            div.textContent = user.username;
-            div.style.cursor = "pointer";
-            div.onclick = () => {
-                if (selectedProfesorDiv) {
-                    selectedProfesorDiv.style.backgroundColor = "";
-                }
-                div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
-                selectedProfesorDiv = div;
-                selectUser(user);
-            };
-            profesorSelectionList.appendChild(div);
-        });
-    //Listado para los profesores al crear grupo
-    initialProfesores
-        .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(user => {
-            const div = document.createElement("div");
-            div.className = "user-item p-1 border-bottom";
-            div.textContent = user.username;
-            div.style.cursor = "pointer";
-            div.onclick = () => {
-                if (selectedProfesorDiv) {
-                    selectedProfesorDiv.style.backgroundColor = "";
-                }
-                div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
-                selectedProfesorDiv = div;
-                selectUser(user);
-            };
-            profesorGrupoSelectionList.appendChild(div);
-        });
-}
+    let selectedProfesorDiv = null;
 
-function selectUser(user){
-    selectProfesor = user;
-    console.log(selectProfesor)
-    return selectProfesor;
-}
+    function renderUsers(filter = "") {
+        profesorSelectionList.innerHTML = "";
+        profesorGrupoSelectionList.innerHTML = "";
+
+        initialProfesores
+            .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(user => {
+                const div = document.createElement("div");
+                div.className = "user-item p-1 border-bottom";
+                div.textContent = user.username;
+                div.style.cursor = "pointer";
+                div.onclick = () => {
+                    if (selectedProfesorDiv) {
+                        selectedProfesorDiv.style.backgroundColor = "";
+                    }
+                    div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
+                    selectedProfesorDiv = div;
+                    selectUser(user);
+                };
+                profesorSelectionList.appendChild(div);
+            });
+        //Listado para los profesores al crear grupo
+        initialProfesores
+            .filter(user => user.username.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(user => {
+                const div = document.createElement("div");
+                div.className = "user-item p-1 border-bottom";
+                div.textContent = user.username;
+                div.style.cursor = "pointer";
+                div.onclick = () => {
+                    if (selectedProfesorDiv) {
+                        selectedProfesorDiv.style.backgroundColor = "";
+                    }
+                    div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
+                    selectedProfesorDiv = div;
+                    selectUser(user);
+                };
+                profesorGrupoSelectionList.appendChild(div);
+            });
+    }
+
+    function selectUser(user) {
+        selectProfesor = user;
+        console.log(selectProfesor)
+        return selectProfesor;
+    }
 
 //HISTORIAL DE TAREAS
-let initialTareas = [];
-getTareas();
-function getTareas() {
-    $.get("/tareas/history", (data) => {})
-        .done((data) => {
-            initialTareas = data;
-            renderTareas();
+    let initialTareas = [];
+    getTareas();
+
+    function getTareas() {
+        $.get("/tareas/history", (data) => {
         })
-        .fail((error) => alert(error));
-}
-function renderTareas(filter = "") {
-    listaHistorial.innerHTML = "";
-    initialTareas
-        .forEach(tarea => {
-            const enlace = document.createElement("a");
-            enlace.href = "#";
-            enlace.className = "list-group-item list-group-item-action historial-item";
-            enlace.innerHTML = `<i class="bi bi-check-all"></i> ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'}`;
-            listaHistorial.appendChild(enlace);
-        });
-}
+            .done((data) => {
+                initialTareas = data;
+                renderTareas();
+            })
+            .fail((error) => alert(error));
+    }
+
+    function renderTareas(filter = "") {
+        listaHistorial.innerHTML = "";
+        initialTareas
+            .forEach(tarea => {
+                const div = document.createElement("div");
+                div.className = "list-group-item historial-item";
+                div.style.cursor = "default";
+                div.innerHTML = `
+                    <i class="bi bi-check-all"></i>
+                    <span id="id-tarea" hidden="hidden">${tarea.id}</span> 
+                    ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'} 
+                    <button class="btn btn-danger" id="button-Eliminar-Tarea">Eliminar</button>`;
+                listaHistorial.appendChild(div);
+            });
+    }
 
 //INDIVIDUOS / ALUMNOS
-let initialIndividuales = [];
-getAlumnos();
-function getAlumnos() {
-    $.get("/alumnos", (data) => {})
-        .done((data) => {
-            initialIndividuales = data;
-            renderAlumnos();
+    let initialIndividuales = [];
+    getAlumnos();
+
+    function getAlumnos() {
+        $.get("/alumnos", (data) => {
         })
-        .fail((error) => alert(error));
-}
-const selectedAlumnos = [];
-function renderAlumnos(filter = "") {
-    listaIndividuales.innerHTML = "";
-    individualSelectionList.innerHTML="";
-    initialIndividuales
-        .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(alumno => {
-            const div = document.createElement("div");
-            div.className = "user-item p-1 border-bottom";
-            div.textContent = alumno.nombre;
-            div.style.cursor = "pointer";
-            listaIndividuales.appendChild(div);
-        });
-    //Lista alumnos del popUp de grupos
-    initialIndividuales
-        .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(alumno => {
-            const div = document.createElement("div");
-            div.className = "user-item p-1 border-bottom";
-            div.textContent = alumno.nombre;
-            div.style.cursor = "pointer";
+            .done((data) => {
+                initialIndividuales = data;
+                renderAlumnos();
+            })
+            .fail((error) => alert(error));
+    }
 
-            div.onclick = () => {
-                const index = selectedAlumnos.indexOf(alumno);
+    const selectedAlumnos = [];
 
-                if (index === -1) {
-                    // No está seleccionado, lo agregamos
-                    selectedAlumnos.push(alumno);
-                    div.style.backgroundColor = "rgba(0, 123, 255, 0.2)";
-                } else {
-                    // Ya está seleccionado, lo quitamos
-                    selectedAlumnos.splice(index, 1);
-                    div.style.backgroundColor = "";
-                }
-            };
+    function renderAlumnos(filter = "") {
+        listaIndividuales.innerHTML = "";
+        individualSelectionList.innerHTML = "";
+        initialIndividuales
+            .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(alumno => {
+                const div = document.createElement("div");
+                div.className = "user-item p-1 border-bottom";
+                div.textContent = alumno.nombre;
+                div.style.cursor = "pointer";
+                listaIndividuales.appendChild(div);
+            });
+        //Lista alumnos del popUp de grupos
+        initialIndividuales
+            .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(alumno => {
+                const div = document.createElement("div");
+                div.className = "user-item p-1 border-bottom";
+                div.textContent = alumno.nombre;
+                div.style.cursor = "pointer";
 
-            individualSelectionList.appendChild(div);
-        });
-    initialIndividuales
-        .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(alumno => {
-            const option = document.createElement("option");
-            option.value = alumno.id;
-            option.textContent = alumno.nombre;
-            alumnosTarea.appendChild(option);
-        });
-}
+                div.onclick = () => {
+                    const index = selectedAlumnos.indexOf(alumno);
+
+                    if (index === -1) {
+                        // No está seleccionado, lo agregamos
+                        selectedAlumnos.push(alumno);
+                        div.style.backgroundColor = "rgba(0, 123, 255, 0.2)";
+                    } else {
+                        // Ya está seleccionado, lo quitamos
+                        selectedAlumnos.splice(index, 1);
+                        div.style.backgroundColor = "";
+                    }
+                };
+
+                individualSelectionList.appendChild(div);
+            });
+        initialIndividuales
+            .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(alumno => {
+                const option = document.createElement("option");
+                option.value = alumno.id;
+                option.textContent = alumno.nombre;
+                alumnosTarea.appendChild(option);
+            });
+    }
 
 //GRUPOS
-let initialGroups = [];
-let selectedGroup = null;
-getGroups();
-function getGroups() {
-    $.get("/grupos", (data) => {})
-        .done((data) => {
-            initialGroups = data;
-            console.log(initialGroups)
-            renderGroups();
+    let initialGroups = [];
+    let selectedGroup = null;
+    getGroups();
+
+    function getGroups() {
+        $.get("/grupos", (data) => {
         })
-        .fail((error) => alert(error));
-}
+            .done((data) => {
+                initialGroups = data;
+                console.log(initialGroups)
+                renderGroups();
+            })
+            .fail((error) => alert(error));
+    }
 
-function renderGroups(filter = "") {
-    listaGrupos.innerHTML = "";
-    groupSelectionList.innerHTML = "";
+    function renderGroups(filter = "") {
+        listaGrupos.innerHTML = "";
+        groupSelectionList.innerHTML = "";
 
-    initialGroups
-        .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(grupo => {
-            const div = document.createElement("div");
-            div.className = "user-item p-1 border-bottom";
-            div.textContent = grupo.nombre;
-            div.style.cursor = "pointer";
-            listaGrupos.appendChild(div);
-        });
-    //Lista de grupos en el PopUp de individuos
-    let selectedGrupoDiv = null;
-    initialGroups
-        .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(grupo => {
-            const div = document.createElement("div");
-            div.className = "user-item p-1 border-bottom";
-            div.textContent = grupo.nombre;
-            div.style.cursor = "pointer";
-            div.onclick = () => {
-                if (selectedGrupoDiv) {
-                    selectedGrupoDiv.style.backgroundColor = "";
-                }
-                div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
-                selectedGrupoDiv = div;
-                selectGroup(grupo);
-            };
-            groupSelectionList.appendChild(div);
-        });
-    selectedGrupoDiv = null;
-    initialGroups
-        .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(grupo => {
-            const option = document.createElement("option");
-            option.value = grupo.nombre;
-            option.textContent = grupo.nombre;
-            gruposTarea.appendChild(option);
-        });
-}
-function selectGroup(grupo){
-    selectedGroup = grupo;
-    return selectedGroup;
-}
+        initialGroups
+            .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(grupo => {
+                const div = document.createElement("div");
+                div.className = "user-item p-1 border-bottom";
+                div.textContent = grupo.nombre;
+                div.style.cursor = "pointer";
+                listaGrupos.appendChild(div);
+            });
+        //Lista de grupos en el PopUp de individuos
+        let selectedGrupoDiv = null;
+        initialGroups
+            .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(grupo => {
+                const div = document.createElement("div");
+                div.className = "user-item p-1 border-bottom";
+                div.textContent = grupo.nombre;
+                div.style.cursor = "pointer";
+                div.onclick = () => {
+                    if (selectedGrupoDiv) {
+                        selectedGrupoDiv.style.backgroundColor = "";
+                    }
+                    div.style.backgroundColor = "rgba(0, 123, 255, 0.2)"; //Color azul transparente
+                    selectedGrupoDiv = div;
+                    selectGroup(grupo);
+                };
+                groupSelectionList.appendChild(div);
+            });
+        selectedGrupoDiv = null;
+        initialGroups
+            .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(grupo => {
+                const option = document.createElement("option");
+                option.value = grupo.nombre;
+                option.textContent = grupo.nombre;
+                gruposTarea.appendChild(option);
+            });
+    }
+
+    function selectGroup(grupo) {
+        selectedGroup = grupo;
+        return selectedGroup;
+    }
 
 //NOMBRE DEL TÍTULO
-$(document).ready(function () {
-    // Se realiza una solicitud AJAX a la URL "/user"
-    $.ajax({
-        url: "/user",
-        method: "GET",
-        dataType: "text" // Se lee como texto para evitar parseos automáticos de JSON
-    })
-        .done((data) => {
-            console.log("Contenido de la respuesta:", data);
-            try {
-                const jsonData = JSON.parse(data);
-                console.log("JSON parseado:", jsonData);
-                //Titulo del dashboard
-                $("#username").text(`Buenas ${jsonData[0]}!`);
-            } catch (e) {
-                console.error("Error al parsear JSON:", e);
-            }
+    $(document).ready(function () {
+        // Se realiza una solicitud AJAX a la URL "/user"
+        $.ajax({
+            url: "/user",
+            method: "GET",
+            dataType: "text" // Se lee como texto para evitar parseos automáticos de JSON
         })
-        .fail((jqXHR) => {
-            console.error("Error en la solicitud:", jqXHR.responseText);
-        });
+            .done((data) => {
+                console.log("Contenido de la respuesta:", data);
+                try {
+                    const jsonData = JSON.parse(data);
+                    console.log("JSON parseado:", jsonData);
+                    //Titulo del dashboard
+                    $("#username").text(`Buenas ${jsonData[0]}!`);
+                } catch (e) {
+                    console.error("Error al parsear JSON:", e);
+                }
+            })
+            .fail((jqXHR) => {
+                console.error("Error en la solicitud:", jqXHR.responseText);
+            });
+    })
 })
 
