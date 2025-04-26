@@ -85,14 +85,7 @@ public class ProfesorController {
     List<String> info() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // Obtener la autenticación actual
         List<String> userInfo;
-        // Si el usuario está autenticado a través de OAuth2 (login social), obtener el email desde el token
-        if (authentication.getPrincipal() instanceof OAuth2User) {
-            Profesor profesor = profesorService.findByEmail(((OAuth2User) authentication.getPrincipal()).getAttribute("email"));
-            userInfo = new ArrayList<>(Arrays.asList(profesor.getUsername(), profesor.getEmail()));
-        } else {
-            // Si no es OAuth2, recuperar la información del profesor a partir del nombre de profesor
-            userInfo = new ArrayList<>(Arrays.asList(profesorService.findByUsername(authentication.getName()).getUsername(), profesorService.findByUsername(authentication.getName()).getEmail()));
-        }
+        userInfo = new ArrayList<>(Arrays.asList(profesorService.findByUsername(authentication.getName()).getUsername(), profesorService.findByUsername(authentication.getName()).getEmail(),profesorService.findByUsername(authentication.getName()).getRol()));
         return userInfo;
     }
 

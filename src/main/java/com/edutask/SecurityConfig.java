@@ -60,7 +60,7 @@ public class SecurityConfig {
 
             String redirectUrl = "/dashboard.html";
             if (AuthorityUtils.authorityListToSet(authentication.getAuthorities()).contains("ROLE_ADMIN")) {
-                redirectUrl = "/administrador.html";
+                redirectUrl = "/administrador";
             }
             response.sendRedirect(redirectUrl);
         };

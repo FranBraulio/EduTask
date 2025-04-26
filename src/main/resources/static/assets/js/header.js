@@ -1,5 +1,6 @@
 //NOMBRE DEL TÍTULO
 $(document).ready(function () {
+    let rol = null;
     // Se realiza una solicitud AJAX a la URL "/user"
     $.ajax({
         url: "/user",
@@ -12,7 +13,10 @@ $(document).ready(function () {
                 const jsonData = JSON.parse(data);
                 console.log("JSON parseado:", jsonData);
                 //Titulo del dashboard
-                $("#username").text(`Buenas ${jsonData[0]}!`);
+                $("#username_header").text(`Buenas ${jsonData[0]}!`);
+                if (jsonData[2] === "ADMIN"){
+                    $("#boton-administrador").attr("hidden", false);
+                }
             } catch (e) {
                 console.error("Error al parsear JSON:", e);
             }
