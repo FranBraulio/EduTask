@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 @RestController
 @CrossOrigin("*")
-public class ProfesorController {
+public class ProfesorRestController {
 
     private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z]).{8,}$";
     private static final Pattern pattern = Pattern.compile(PASSWORD_REGEX);
@@ -30,7 +30,7 @@ public class ProfesorController {
     private final PasswordEncoder passwordEncoder;
     private final ProfesorService profesorService;
 
-    public ProfesorController(PasswordEncoder passwordEncoder, ProfesorService profesorService) {
+    public ProfesorRestController(PasswordEncoder passwordEncoder, ProfesorService profesorService) {
         this.passwordEncoder = passwordEncoder;
         this.profesorService = profesorService;
     }
@@ -133,9 +133,9 @@ public class ProfesorController {
 
     // Metodo para eliminar un usuario por ID
     @GetMapping("/delete/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+    public void deleteUserById(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
         profesorService.deleteById(id);
-        return ResponseEntity.ok("Usuario eliminado correctamente");
+        response.sendRedirect("/administrador");
     }
 
     //Metodo para sacar todos los profesores

@@ -7,8 +7,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "Alumno_Tarea")
-@Getter
-@Setter
 public class AlumnoTarea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +21,28 @@ public class AlumnoTarea {
     @JoinColumn(name = "Tarea_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private Tarea tarea;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Alumno getAlumno() {
+        return alumno;
+    }
+
+    public void setAlumno(Alumno alumno) {
+        this.alumno = alumno;
+    }
+
+    public Tarea getTarea() {
+        return tarea;
+    }
+
+    public void setTarea(Tarea tarea) {
+        this.tarea = tarea;
+    }
 }

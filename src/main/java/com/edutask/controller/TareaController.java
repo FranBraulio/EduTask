@@ -16,7 +16,6 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/tareas")
-@RequiredArgsConstructor
 public class TareaController {
 
     private final TareaRepository tareaRepository;
@@ -25,6 +24,15 @@ public class TareaController {
     private final AlumnoTareaRepository alumnoTareaRepository;
     private final ProfesorRepository profesorRepository; // si hace falta
     private final TareaService tareaService;
+
+    public TareaController(TareaRepository tareaRepository, AlumnoRepository alumnoRepository, GrupoRepository grupoRepository, AlumnoTareaRepository alumnoTareaRepository, ProfesorRepository profesorRepository, TareaService tareaService) {
+        this.tareaRepository = tareaRepository;
+        this.alumnoRepository = alumnoRepository;
+        this.grupoRepository = grupoRepository;
+        this.alumnoTareaRepository = alumnoTareaRepository;
+        this.profesorRepository = profesorRepository;
+        this.tareaService = tareaService;
+    }
 
     @PostMapping("/crear")
     public ResponseEntity<String> crearTarea(@RequestBody Map<String, String> datos) {

@@ -10,8 +10,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Alumno")
-@Getter
-@Setter
 @ToString
 public class Alumno {
     @Id
@@ -37,4 +35,60 @@ public class Alumno {
 
     @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AlumnoTarea> alumnoTarea = new HashSet<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public Profesor getProfesor() {
+        return profesor;
+    }
+
+    public void setProfesor(Profesor profesor) {
+        this.profesor = profesor;
+    }
+
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
+
+    public Set<AlumnoTarea> getAlumnoTarea() {
+        return alumnoTarea;
+    }
+
+    public void setAlumnoTarea(Set<AlumnoTarea> alumnoTarea) {
+        this.alumnoTarea = alumnoTarea;
+    }
 }

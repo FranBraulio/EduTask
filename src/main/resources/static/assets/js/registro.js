@@ -42,7 +42,7 @@ $(document).ready(function () {
                             text.textContent = "El usuario ha sido creado con éxito."
                             errorModal.show(); // Mostrar el modal de éxito
                         }
-                        window.location.href = '/index#login'; // Redireccionar al formulario de login
+                        window.location.href = '/administrador'; // Redireccionar a la pantalla de administrador
                     },
                     error: function (xhr, status, error) {
                         deleteBG(header) // Limpiar el estilo de fondo anterior
