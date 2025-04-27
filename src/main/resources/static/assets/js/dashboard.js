@@ -132,29 +132,50 @@ $(document).ready(function () {
         const descripcion = document.getElementById('descripcion').value;
         const fecha_limite = document.getElementById('fecha_limite').value;
         const asignar_a = document.getElementById('asignar_a').value;
-
-        let tareaData = {
-            descripcion,
-            fecha_limite,
-            asignar_a
-        };
+        let profesorId;
 
         $.ajax({
-            url: '/tareas/crear',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(tareaData),
-            success: function (response) {
-                // Aqui se puede mostrar un mensaje
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100);
-            },
-            error: function (xhr, status, error) {
-                console.error("Error al crear la tarea:", error);
-                buttonTarea.disabled = false;
-            }
-        });
+            url: "/user",
+            method: "GET",
+            dataType: "text" // Se lee como texto para evitar parseos automáticos de JSON
+        })
+            .done((data) => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    profesorId = jsonData[3];
+
+                    let tareaData = {
+                        descripcion,
+                        fecha_limite,
+                        asignar_a,
+                        profesorId
+                    };
+
+                    $.ajax({
+                        url: '/tareas/crear',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(tareaData),
+                        success: function (response) {
+                            // Aqui se puede mostrar un mensaje
+                            console.log("Tarea creada correctamente");
+                            window.location.href = "/dashboard.html";
+
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error al crear la tarea:", error);
+                            buttonTarea.disabled = false;
+                        }
+                    });
+
+                } catch (e) {
+                    console.error("Error al parsear JSON:", e);
+                }
+            })
+            .fail((jqXHR) => {
+                console.error("Error en la solicitud:", jqXHR.responseText);
+            });
+
     });
 
     document.addEventListener("click", (e) => {
@@ -275,18 +296,42 @@ $(document).ready(function () {
 
     function renderTareas(filter = "") {
         listaHistorial.innerHTML = "";
-        initialTareas
-            .forEach(tarea => {
-                const div = document.createElement("div");
-                div.className = "list-group-item historial-item";
-                div.style.cursor = "default";
-                div.innerHTML = `
-                    <i class="bi bi-check-all"></i>
-                    <span id="id-tarea" hidden="hidden">${tarea.id}</span> 
-                    ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'} 
-                    <button class="btn btn-danger" id="button-Eliminar-Tarea">Eliminar</button>`;
-                listaHistorial.appendChild(div);
+
+        let idProfesor = null;
+        $.ajax({
+            url: "/user",
+            method: "GET",
+            dataType: "text" // Se lee como texto para evitar parseos automáticos de JSON
+        })
+            .done((data) => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    idProfesor = jsonData[3];
+                    initialTareas
+                        .forEach(tarea => {
+                            if (tarea.profesor.id == idProfesor){
+                                const div = document.createElement("div");
+                                div.className = "list-group-item historial-item";
+                                div.style.cursor = "default";
+                                div.innerHTML =
+                                    `<i class="bi bi-check-all"></i>
+                                    <span id="id-tarea" hidden="hidden">${tarea.id}</span> 
+                                    ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'} 
+                                    <button class="btn btn-danger" id="button-Eliminar-Tarea">Eliminar</button>`;
+
+                                listaHistorial.appendChild(div);
+                            }
+                        });
+
+                } catch (e) {
+                    console.error("Error al parsear JSON:", e);
+                }
+            })
+            .fail((jqXHR) => {
+                console.error("Error en la solicitud:", jqXHR.responseText);
             });
+
+
     }
 
 //INDIVIDUOS / ALUMNOS
@@ -392,7 +437,7 @@ $(document).ready(function () {
             .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
             .forEach(grupo => {
                 const option = document.createElement("option");
-                option.value = grupo.nombre;
+                option.value = grupo.id;
                 option.textContent = grupo.nombre;
                 gruposTarea.appendChild(option);
             });

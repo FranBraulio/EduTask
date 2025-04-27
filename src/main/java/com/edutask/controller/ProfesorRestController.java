@@ -85,7 +85,7 @@ public class ProfesorRestController {
     List<String> info() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // Obtener la autenticación actual
         List<String> userInfo;
-        userInfo = new ArrayList<>(Arrays.asList(profesorService.findByUsername(authentication.getName()).getUsername(), profesorService.findByUsername(authentication.getName()).getEmail(),profesorService.findByUsername(authentication.getName()).getRol()));
+        userInfo = new ArrayList<>(Arrays.asList(profesorService.findByUsername(authentication.getName()).getUsername(), profesorService.findByUsername(authentication.getName()).getEmail(), profesorService.findByUsername(authentication.getName()).getRol(), profesorService.findByUsername(authentication.getName()).getId().toString()));
         return userInfo;
     }
 

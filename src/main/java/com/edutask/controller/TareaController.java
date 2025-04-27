@@ -2,10 +2,12 @@ package com.edutask.controller;
 
 import com.edutask.entities.*;
 import com.edutask.repository.*;
-import com.edutask.service.TareaService;
+import com.edutask.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,20 +20,18 @@ import java.util.Set;
 @RequestMapping("/tareas")
 public class TareaController {
 
-    private final TareaRepository tareaRepository;
-    private final AlumnoRepository alumnoRepository;
-    private final GrupoRepository grupoRepository;
-    private final AlumnoTareaRepository alumnoTareaRepository;
-    private final ProfesorRepository profesorRepository; // si hace falta
     private final TareaService tareaService;
+    private final AlumnoService alumnoService;
+    private final GrupoService grupoService;
+    private final AlumnoTareaService alumnoTareaService;
+    private final ProfesorService profesorService;
 
-    public TareaController(TareaRepository tareaRepository, AlumnoRepository alumnoRepository, GrupoRepository grupoRepository, AlumnoTareaRepository alumnoTareaRepository, ProfesorRepository profesorRepository, TareaService tareaService) {
-        this.tareaRepository = tareaRepository;
-        this.alumnoRepository = alumnoRepository;
-        this.grupoRepository = grupoRepository;
-        this.alumnoTareaRepository = alumnoTareaRepository;
-        this.profesorRepository = profesorRepository;
+    public TareaController(TareaService tareaService, AlumnoService alumnoService, GrupoService grupoService, AlumnoTareaService alumnoTareaService, ProfesorService profesorService) {
         this.tareaService = tareaService;
+        this.alumnoService = alumnoService;
+        this.grupoService = grupoService;
+        this.alumnoTareaService = alumnoTareaService;
+        this.profesorService = profesorService;
     }
 
     @PostMapping("/crear")
@@ -39,6 +39,9 @@ public class TareaController {
         String descripcion = datos.get("descripcion");
         String fechaLimite = datos.get("fecha_limite");
         String asignarA = datos.get("asignar_a");
+        String profesorId = datos.get("profesorId");
+        System.out.println("AQUI "+asignarA);
+
 
         Tarea tarea = new Tarea();
         tarea.setMensaje(descripcion);
@@ -47,25 +50,25 @@ public class TareaController {
             tarea.setFecha_fin(LocalDate.parse(fechaLimite).atStartOfDay());
         }
 
-        Profesor profesor = profesorRepository.findById(1L).orElseThrow();
-        tarea.setProfesor(profesor);
+        tarea.setProfesor(profesorService.findById(Long.parseLong(profesorId)));
         tareaService.saveTarea(tarea);
 
         Set<Alumno> alumnosAsignados = new HashSet<>();
         Long idAsignado = Long.parseLong(asignarA);
+        System.out.println("AQUI "+idAsignado);
 
         if (idAsignado <= 1000) {
-            Grupo grupo = grupoRepository.findById(idAsignado).orElseThrow();
+            Grupo grupo = grupoService.findById(idAsignado);
             alumnosAsignados.addAll(grupo.getAlumnos());
         } else {
-            Alumno alumno = alumnoRepository.findById(idAsignado).orElseThrow();
+            Alumno alumno = alumnoService.findById(idAsignado);
             alumnosAsignados.add(alumno);
         }
         for (Alumno alumno : alumnosAsignados) {
             AlumnoTarea alumnoTarea = new AlumnoTarea();
             alumnoTarea.setAlumno(alumno);
             alumnoTarea.setTarea(tarea);
-            alumnoTareaRepository.save(alumnoTarea);
+            alumnoTareaService.save(alumnoTarea);
         }
 
         return ResponseEntity.ok("Tarea creada exitosamente");

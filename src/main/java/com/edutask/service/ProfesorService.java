@@ -43,4 +43,8 @@ public class ProfesorService {
         return profesorRepository.findByEmail(email);
     }
 
+    public Profesor findById(Long id) {
+        return profesorRepository.findById(id).get();
+    }
+
 }

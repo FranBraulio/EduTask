@@ -57,7 +57,7 @@
                     <td th:text="${profesor.getUsername()}"></td>
                     <td th:text="${profesor.getEmail()}"></td>
                     <td th:text="${profesor.getRol()}"></td>
-                    <td>
+                    <td th:if="${profesor.getRol() != 'ADMIN'}">
                         <a th:href="@{/delete/{id}(id=${profesor.id})}">
                             <button type="button" class="btn btn-danger btn-block"><i class="bi bi-trash-fill"></i>
                                 Eliminar Profesor
