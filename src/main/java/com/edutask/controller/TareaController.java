@@ -42,8 +42,6 @@ public class TareaController {
         String fechaLimite = datos.get("fecha_limite");
         String asignarA = datos.get("asignar_a");
         String profesorId = datos.get("profesorId");
-        System.out.println("AQUI "+asignarA);
-
 
         Tarea tarea = new Tarea();
         tarea.setMensaje(descripcion);
