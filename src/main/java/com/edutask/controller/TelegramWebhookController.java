@@ -26,21 +26,16 @@ public class TelegramWebhookController {
 
     @PostMapping("/webhook")
     public ResponseEntity<?> onUpdateReceived(@RequestBody Map<String, Object> update) {
-        // Log para verificar que la solicitud llegó
-        System.out.println("Webhook recibido: " + update);
 
         // Verifica si el update tiene un mensaje
         Map<String, Object> message = (Map<String, Object>) update.get("message");
         if (message == null) {
-            System.out.println("No hay mensaje en el webhook.");
             return ResponseEntity.ok().build();
         }
 
         Map<String, Object> from = (Map<String, Object>) message.get("from");
         Long chatId = ((Number) from.get("id")).longValue();
         String text = (String) message.get("text");
-
-        System.out.println("Texto recibido: " + text);
 
         // Detecta comandos tipo: /start ALUMNO_123
         if (text != null && text.startsWith("/start ALUMNO_")) {

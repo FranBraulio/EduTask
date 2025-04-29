@@ -74,7 +74,7 @@ public class TareaController {
 
             String chatId = alumno.getTelegramChatId();
             if (chatId != null && !chatId.isEmpty()) {
-                String mensaje = null;
+                String mensaje;
                 if (fechaLimite != null && !fechaLimite.isEmpty()) {
                     mensaje = "Buenas, te han asignado la siguiente tarea: " + descripcion + ". Recuerda que tienes de fecha limite: " + fechaLimite;
                 }else {
