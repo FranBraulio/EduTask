@@ -7,7 +7,10 @@ $(document).ready(function () {
     const listaHistorial = document.getElementById('lista-historial');
     const asignarSelect = document.getElementById('asignar_a');
     const gruposTarea = document.getElementById("gruposTarea");
+    const gruposAviso = document.getElementById("gruposAviso");
     const alumnosTarea = document.getElementById("alumnosTarea");
+    const alumnosAviso = document.getElementById("alumnosAviso");
+
 
 // MODAL: Añadir Individuo
     const addIndividualModal = document.getElementById('addIndividualModal');
@@ -200,7 +203,7 @@ $(document).ready(function () {
 
     grupoInput.addEventListener('keyup', () => renderGroups(grupoInput.value));
     individualInput.addEventListener('keyup', () => renderAlumnos(individualInput.value));
-    historialInput.addEventListener('keyup', () => filterList(historialInput, listaHistorial, 'historial-item'));
+    historialInput.addEventListener('keyup', () => renderTareas(historialInput.value));
 
     buscarGruposIndividualInput.addEventListener('keyup', () => renderGroups(buscarGruposIndividualInput.value));
     buscarProfesorIndividualInput.addEventListener('keyup', () => renderUsers(buscarProfesorIndividualInput.value));
@@ -282,57 +285,61 @@ $(document).ready(function () {
 
 //HISTORIAL DE TAREAS
     let initialTareas = [];
+    let idProfesor = null;
+
+    getUser();
     getTareas();
+
+    function getUser() {
+        $.ajax({
+            url: "/user",
+            method: "GET",
+            dataType: "text"
+        }).done((data) => {
+            try {
+                const jsonData = JSON.parse(data);
+                idProfesor = jsonData[3];
+                renderTareas();
+            } catch (e) {
+                console.error("Error al parsear JSON:", e);
+            }
+        }).fail((jqXHR) => {
+            console.error("Error en la solicitud:", jqXHR.responseText);
+        });
+    }
 
     function getTareas() {
         $.get("/tareas/history", (data) => {
         })
             .done((data) => {
                 initialTareas = data;
-                renderTareas();
+                renderTareas(); // solo si ya tienes los datos de usuario
             })
             .fail((error) => alert(error));
     }
 
     function renderTareas(filter = "") {
+        if (idProfesor === null) return; // si aún no se ha cargado el usuario, no continues
+
         listaHistorial.innerHTML = "";
 
-        let idProfesor = null;
-        $.ajax({
-            url: "/user",
-            method: "GET",
-            dataType: "text" // Se lee como texto para evitar parseos automáticos de JSON
-        })
-            .done((data) => {
-                try {
-                    const jsonData = JSON.parse(data);
-                    idProfesor = jsonData[3];
-                    initialTareas
-                        .forEach(tarea => {
-                            if (tarea.profesor.id == idProfesor){
-                                const div = document.createElement("div");
-                                div.className = "list-group-item historial-item";
-                                div.style.cursor = "default";
-                                div.innerHTML =
-                                    `<i class="bi bi-check-all"></i>
-                                    <span id="id-tarea" hidden="hidden">${tarea.id}</span> 
-                                    ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'} 
-                                    <button class="btn btn-danger" id="button-Eliminar-Tarea">Eliminar</button>`;
-
-                                listaHistorial.appendChild(div);
-                            }
-                        });
-
-                } catch (e) {
-                    console.error("Error al parsear JSON:", e);
+        initialTareas
+            .filter(tarea => tarea.mensaje.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(tarea => {
+                if (tarea.profesor.id == idProfesor){
+                    const div = document.createElement("div");
+                    div.className = "list-group-item historial-item";
+                    div.style.cursor = "default";
+                    div.innerHTML =
+                        `<i class="bi bi-check-all"></i>
+                    <span id="id-tarea" hidden="hidden">${tarea.id}</span> 
+                    ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'} 
+                    <button class="btn btn-danger" id="button-Eliminar-Tarea">Eliminar</button>`;
+                    listaHistorial.appendChild(div);
                 }
-            })
-            .fail((jqXHR) => {
-                console.error("Error en la solicitud:", jqXHR.responseText);
             });
-
-
     }
+
 
 //INDIVIDUOS / ALUMNOS
     let initialIndividuales = [];
@@ -376,6 +383,14 @@ $(document).ready(function () {
                 option.textContent = alumno.nombre;
                 alumnosTarea.appendChild(option);
             });
+        initialIndividuales
+            .filter(alumno => alumno.nombre.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(alumno => {
+                const option = document.createElement("option");
+                option.value = alumno.id;
+                option.textContent = alumno.nombre;
+                alumnosAviso.appendChild(option);
+            });
     }
 
 //GRUPOS
@@ -413,7 +428,7 @@ $(document).ready(function () {
                 div.style.cursor = "pointer";
                 enlace.appendChild(div);
             });
-        //Lista de grupos en el PopUp de individuos
+        //Lista de grupos en el PopUp de Alumnos
         let selectedGrupoDiv = null;
         initialGroups
             .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
@@ -440,6 +455,14 @@ $(document).ready(function () {
                 option.value = grupo.id;
                 option.textContent = grupo.nombre;
                 gruposTarea.appendChild(option);
+            });
+        initialGroups
+            .filter(grupo => grupo.nombre.toLowerCase().includes(filter.toLowerCase()))
+            .forEach(grupo => {
+                const option = document.createElement("option");
+                option.value = grupo.id;
+                option.textContent = grupo.nombre;
+                gruposAviso.appendChild(option);
             });
     }
 
