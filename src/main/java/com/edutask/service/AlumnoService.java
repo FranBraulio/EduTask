@@ -12,7 +12,7 @@ public class AlumnoService {
     @Autowired
     AlumnoRepository alumnoRepository;
 
-    public Alumno saveAlumno(Alumno alumno) {
+    public Alumno save(Alumno alumno) {
         return alumnoRepository.save(alumno);
     }
 

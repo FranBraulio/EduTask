@@ -1654,13 +1654,13 @@ input, select, textarea {
 			-ms-flex-wrap: wrap;
 			flex-wrap: wrap;
 		  }
-		  
+
 		  .social-login ul li {
 			-webkit-box-flex: 1;
 			-ms-flex: 1 auto;
 			flex: 1 auto;
 		  }
-		  
+
 		  .social-login ul li a {
 			background-color: rgba(255, 255, 255, 0.075);
 			border-radius: 3px;
@@ -1682,7 +1682,7 @@ input, select, textarea {
 			-webkit-transition: background-color 0.3s;
 			transition: background-color 0.3s;
 		  }
-		  
+
 		  .social-login ul li a::before {
 			content: "";
 			width: 30px;
@@ -1692,16 +1692,16 @@ input, select, textarea {
 			background-size: 30px;
 			margin-right: 5px;
 		  }
-		  
+
 		  .social-login ul li a:hover {
 			background-color:rgba(255, 255, 255, 0.25);
 			color:rgba(255, 255, 255, 0.075);
 		  }
-		  
+
 		  li.google {
 			margin-right: 10px;
 		  }
-		  
+
 		  li.google a::before {
 			background-image: url("../images/google.png");
 		  }
@@ -1710,21 +1710,21 @@ input, select, textarea {
 			margin: 0;
 			background-image: url("../images/instagram.png");
 		  }
-		  
+
 		  li.whatsApp a::before {
 			margin: 0;
 			background-image: url("../images/whatsApp.png");
 		  }
-		  
+
 		  li.fb {
 			margin-left: 10px;
 		  }
-		  
+
 		  li.fb a::before {
 			margin: 0;
 			background-image: url("../images/fb.png");
 		  }
-		  
+
 		  @media only screen and (max-width: 400px) {
 			.social-login ul {
 			  -webkit-box-orient: vertical;
@@ -1732,12 +1732,12 @@ input, select, textarea {
 			  -ms-flex-direction: column;
 			  flex-direction: column;
 			}
-		  
+
 			li.google,
 			li.fb {
 			  margin: 0;
 			}
-		  
+
 			li.google {
 			  margin-bottom: 10px;
 			}

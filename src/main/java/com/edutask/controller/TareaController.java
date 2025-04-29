@@ -25,13 +25,15 @@ public class TareaController {
     private final GrupoService grupoService;
     private final AlumnoTareaService alumnoTareaService;
     private final ProfesorService profesorService;
+    private final TelegramService telegramService;
 
-    public TareaController(TareaService tareaService, AlumnoService alumnoService, GrupoService grupoService, AlumnoTareaService alumnoTareaService, ProfesorService profesorService) {
+    public TareaController(TareaService tareaService, AlumnoService alumnoService, GrupoService grupoService, AlumnoTareaService alumnoTareaService, ProfesorService profesorService, TelegramService telegramService) {
         this.tareaService = tareaService;
         this.alumnoService = alumnoService;
         this.grupoService = grupoService;
         this.alumnoTareaService = alumnoTareaService;
         this.profesorService = profesorService;
+        this.telegramService = telegramService;
     }
 
     @PostMapping("/crear")
@@ -69,6 +71,13 @@ public class TareaController {
             alumnoTarea.setAlumno(alumno);
             alumnoTarea.setTarea(tarea);
             alumnoTareaService.save(alumnoTarea);
+
+            String chatId = alumno.getTelegramChatId();
+            if (chatId != null && !chatId.isEmpty()) {
+                String mensaje = "Buenas, te han asignado la siguiente tarea: " + descripcion;
+                telegramService.sendMessage(chatId, mensaje);
+            }
+
         }
 
         return ResponseEntity.ok("Tarea creada exitosamente");

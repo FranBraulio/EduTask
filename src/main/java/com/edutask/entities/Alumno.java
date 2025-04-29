@@ -25,6 +25,9 @@ public class Alumno {
     @Column(name = "telefono")
     private String telefono;
 
+    @Column(name = "telegramChat_id")
+    private String telegramChatId;
+
     @ManyToOne
     @JoinColumn(name = "Profesor_id")
     private Profesor profesor;
@@ -90,5 +93,13 @@ public class Alumno {
 
     public void setAlumnoTarea(Set<AlumnoTarea> alumnoTarea) {
         this.alumnoTarea = alumnoTarea;
+    }
+
+    public String getTelegramChatId() {
+        return telegramChatId;
+    }
+
+    public void setTelegramChatId(String telegramChatId) {
+        this.telegramChatId = telegramChatId;
     }
 }

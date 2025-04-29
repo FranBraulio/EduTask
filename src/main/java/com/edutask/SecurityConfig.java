@@ -21,6 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register", "index.html", "/register.html", "assets/css/**", "assets/images/**", "assets/js/**", "/index").permitAll()
+                .requestMatchers("/telegram/webhook").permitAll()
                 .requestMatchers("/administrador.html", "/").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )

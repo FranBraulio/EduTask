@@ -31,7 +31,7 @@ public class AlumnoRestController {
     @PostMapping("/alumno/create")
     @Transactional
     ResponseEntity<?> create(@RequestBody Alumno alumno) {
-        alumnoService.saveAlumno(alumno);
+        alumnoService.save(alumno);
         return ResponseEntity.status(HttpStatus.CREATED).body("Alumno creado con éxito");
     }
 
@@ -55,7 +55,7 @@ public class AlumnoRestController {
         existente.setProfesor(alumno.getProfesor());
         existente.setGrupo(alumno.getGrupo());
 
-        alumnoService.saveAlumno(existente);
+        alumnoService.save(existente);
         return ResponseEntity.ok("Alumno actualizado correctamente");
     }
 
