@@ -41,7 +41,7 @@ $(document).ready(function () {
     });
     const link = "https://t.me/athmos_bot?start="+$('#alumnoId').val();
     QRCode.toCanvas(document.getElementById('qrcode'), link, {
-        width: 512,
+        width: 256,
         margin: 1,
         color: {
             dark: "#000000",
