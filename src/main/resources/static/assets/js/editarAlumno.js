@@ -39,4 +39,10 @@ $(document).ready(function () {
                     window.location.href = "/dashboard.html";
                 });
     });
+    const link = "https://t.me/athmos_bot?start="+$('#alumnoId').val();
+    QRCode.toCanvas(document.getElementById('qrcode'), link, function (error) {
+        if (error) console.error(error);
+        console.log('QR generado!');
+    });
+
 });
