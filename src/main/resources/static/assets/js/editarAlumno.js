@@ -40,9 +40,23 @@ $(document).ready(function () {
                 });
     });
     const link = "https://t.me/athmos_bot?start="+$('#alumnoId').val();
-    QRCode.toCanvas(document.getElementById('qrcode'), link, function (error) {
-        if (error) console.error(error);
-        console.log('QR generado!');
+    QRCode.toCanvas(document.getElementById('qrcode'), link, {
+        width: 512,
+        margin: 1,
+        color: {
+            dark: "#000000",
+            light: "#ffffff"
+        }
+    }, function (error) {
+        if (error) {
+            console.error("Error generando el QR:", error);
+        } else {
+            console.log("QR generado correctamente");
+            const urlEl = document.getElementById('urlQr');
+            urlEl.href = link;
+            urlEl.textContent = link;
+        }
     });
+
 
 });
