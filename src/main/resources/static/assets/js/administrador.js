@@ -25,16 +25,34 @@ $(document).ready(function () {
             .filter(tarea => tarea.mensaje.toLowerCase().includes(filter.toLowerCase()))
             .forEach(tarea => {
                 const div = document.createElement("div");
-                div.className = "list-group-item historial-item";
+                div.className = "list-group-item historial-item tarea-item";
                 div.style.cursor = "default";
                 div.innerHTML =
                     `<i class="bi bi-check-all"></i>
-                     <span id="id-tarea" hidden="hidden">${tarea.id}</span> 
+                     <span class="id-tarea" hidden="hidden">${tarea.id}</span> 
                      ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'} 
-                     <button class="btn btn-danger" id="button-Eliminar-Tarea">Eliminar</button>`;
+                     <button class="btn btn-danger button-eliminar-tarea">Eliminar</button>`;
 
                 listaHistorialAdmin.appendChild(div);
             });
     }
+
+    document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("button-eliminar-tarea")) {
+            const tareaElement = e.target.closest(".tarea-item"); // Contenedor de la tarea
+            const id = tareaElement.querySelector(".id-tarea").textContent;
+            console.log("Eliminando Tarea con ID:", id);
+
+            $.get(`tareas/delete/${id}`)
+                .done(() => {
+                    console.log("Tarea eliminada correctamente");
+                    window.location.href = "/administrador";
+                })
+                .fail(() => {
+                    console.error("Error al eliminar la tarea");
+                    window.location.href = "/administrador";
+                });
+        }
+    });
 
 });
