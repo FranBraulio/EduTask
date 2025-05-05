@@ -182,8 +182,9 @@ $(document).ready(function () {
     });
 
     document.addEventListener("click", (e) => {
-        if (e.target.id === "button-Eliminar-Tarea") {
-            let id = document.getElementById("id-tarea").textContent;
+        if (e.target.classList.contains("button-eliminar-tarea")) {
+            const tareaElement = e.target.closest(".tarea-item"); // Contenedor de la tarea
+            const id = tareaElement.querySelector(".id-tarea").textContent;
             console.log("Eliminando Tarea con ID:", id);
 
             $.get(`tareas/delete/${id}`)
@@ -319,27 +320,23 @@ $(document).ready(function () {
     }
 
     function renderTareas(filter = "") {
-        if (idProfesor === null) return; // si aún no se ha cargado el usuario, no continues
-
         listaHistorial.innerHTML = "";
 
         initialTareas
             .filter(tarea => tarea.mensaje.toLowerCase().includes(filter.toLowerCase()))
             .forEach(tarea => {
-                if (tarea.profesor.id == idProfesor){
-                    const div = document.createElement("div");
-                    div.className = "list-group-item historial-item";
-                    div.style.cursor = "default";
-                    div.innerHTML =
-                        `<i class="bi bi-check-all"></i>
-                    <span id="id-tarea" hidden="hidden">${tarea.id}</span> 
-                    ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'} 
-                    <button class="btn btn-danger" id="button-Eliminar-Tarea">Eliminar</button>`;
-                    listaHistorial.appendChild(div);
-                }
+                const div = document.createElement("div");
+                div.className = "list-group-item historial-item tarea-item";
+                div.style.cursor = "default";
+                div.innerHTML =
+                    `<i class="bi bi-check-all"></i>
+                     <span class="id-tarea" hidden="hidden">${tarea.id}</span> 
+                     ${tarea.mensaje} - ${tarea.fecha_fin ? tarea.fecha_fin : 'sin fecha de entrega'} 
+                     <button class="btn btn-danger button-eliminar-tarea">Eliminar</button>`;
+
+                listaHistorial.appendChild(div);
             });
     }
-
 
 //INDIVIDUOS / ALUMNOS
     let initialIndividuales = [];
