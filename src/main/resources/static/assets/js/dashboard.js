@@ -371,7 +371,7 @@ $(document).ready(function () {
 
                 const div = document.createElement("div");
                 div.className = "user-item p-1 border-bottom";
-                div.textContent = alumno.nombre;
+                div.textContent = alumno.nombre + " " + alumno.apellido;
                 div.style.cursor = "pointer";
                 enlace.appendChild(div);
             });
@@ -380,7 +380,7 @@ $(document).ready(function () {
             .forEach(alumno => {
                 const option = document.createElement("option");
                 option.value = alumno.id;
-                option.textContent = alumno.nombre;
+                option.textContent = alumno.nombre + " " + alumno.apellido;
                 alumnosTarea.appendChild(option);
             });
         initialIndividuales
@@ -388,7 +388,7 @@ $(document).ready(function () {
             .forEach(alumno => {
                 const option = document.createElement("option");
                 option.value = alumno.id;
-                option.textContent = alumno.nombre;
+                option.textContent = alumno.nombre + " " + alumno.apellido;
                 alumnosAviso.appendChild(option);
             });
     }
