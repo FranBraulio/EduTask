@@ -80,11 +80,11 @@
             <div class="col-lg-6">
                 <div class="message-form">
                     <h2 class="mb-3"><i class="bi bi-chat-dots-fill"></i> Enviar Aviso</h2>
-                    <form>
+                    <form method="POST" action="/aviso/crear" id="form-aviso">
                         <!-- Campo para escribir el mensaje -->
                         <div class="mb-3">
-                            <label for="mensaje-aviso" class="form-label"><i class="bi bi-envelope-fill"></i> Mensaje</label>
-                            <input type="text" class="form-control" id="mensaje-aviso" name="mensaje-aviso" required>
+                            <label for="mensaje_aviso" class="form-label"><i class="bi bi-envelope-fill"></i> Mensaje</label>
+                            <input type="text" class="form-control" id="mensaje_aviso" name="mensaje-aviso" required>
                         </div>
 
                         <!-- Selección del canal (WhatsApp/Telegram) -->
@@ -112,7 +112,7 @@
                         </div>
 
                         <!-- Botón para enviar mensaje -->
-                        <button type="submit" class="btn btn-success btn-block"><i class="bi bi-send-fill"></i> Enviar Mensaje</button>
+                        <button type="submit" class="btn btn-success btn-block" id="button-aviso"><i class="bi bi-send-fill"></i> Enviar Mensaje</button>
                     </form>
                 </div>
             </div>

@@ -136,6 +136,8 @@ $(document).ready(function () {
         });
     });
 
+    //CREAR TAREAS
+
     document.getElementById('form-tarea').addEventListener('submit', function (e) {
         e.preventDefault();
         let buttonTarea = document.getElementById("button-tarea");
@@ -176,6 +178,61 @@ $(document).ready(function () {
                         },
                         error: function (xhr, status, error) {
                             console.error("Error al crear la tarea:", error);
+                            buttonTarea.disabled = false;
+                        }
+                    });
+
+                } catch (e) {
+                    console.error("Error al parsear JSON:", e);
+                }
+            })
+            .fail((jqXHR) => {
+                console.error("Error en la solicitud:", jqXHR.responseText);
+            });
+
+    });
+
+    //CREAR AVISOS
+    document.getElementById('form-aviso').addEventListener('submit', function (e) {
+        e.preventDefault();
+        let buttonTarea = document.getElementById("button-aviso");
+        buttonTarea.disabled = true;
+
+        const mensaje_aviso = document.getElementById('mensaje_aviso').value;
+        const enviar_a_aviso = document.getElementById('enviar_a_aviso').value;
+        const enviar_por = document.getElementById('enviar_por').value;
+        let profesorId;
+
+        $.ajax({
+            url: "/user",
+            method: "GET",
+            dataType: "text" // Se lee como texto para evitar parseos automáticos de JSON
+        })
+            .done((data) => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    profesorId = jsonData[3];
+
+                    let avisoData = {
+                        mensaje_aviso,
+                        enviar_a_aviso,
+                        profesorId,
+                        enviar_por
+                    };
+
+                    $.ajax({
+                        url: '/aviso/crear',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(avisoData),
+                        success: function (response) {
+                            // Aqui se puede mostrar un mensaje
+                            console.log("Aviso creado correctamente");
+                            window.location.href = "/dashboard.html";
+
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error al crear el aviso:", error);
                             buttonTarea.disabled = false;
                         }
                     });

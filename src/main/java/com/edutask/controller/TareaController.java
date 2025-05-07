@@ -55,7 +55,6 @@ public class TareaController {
 
         Set<Alumno> alumnosAsignados = new HashSet<>();
         Long idAsignado = Long.parseLong(asignarA);
-        System.out.println("AQUI "+idAsignado);
 
         if (idAsignado <= 1000) {
             Grupo grupo = grupoService.findById(idAsignado);
