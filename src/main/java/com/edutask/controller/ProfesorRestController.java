@@ -52,8 +52,6 @@ public class ProfesorRestController {
                     }
                     profesorService.saveUser(profesor);
 
-                    //setWalletUsuarios(profesor, walletService, cryptoService, walletCryptoService);
-                    //emailService.enviarCorreo(profesor.getEmail(), "¡Bienvenido!", "Gracias por registrarte en CryptoSandbox.");
                     return ResponseEntity.status(HttpStatus.CREATED).body("Profesor creado con éxito");
                 }else {
                     return ResponseEntity.badRequest().body("Contraseña invalida");

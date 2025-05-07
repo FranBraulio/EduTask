@@ -75,25 +75,34 @@ $(document).ready(function () {
         e.preventDefault();
         const nombre = document.getElementById('nombre-individual').value;
         const apellido = document.getElementById("apellido-individual").value;
-        const telefono = document.getElementById('telefono-individual').value;
-        const profesor = selectProfesor;
-        const grupo = selectedGroup;
-        // Crear objeto con los datos del usuario
-        let alumnoData = {nombre, apellido, telefono, profesor, grupo};
-        $.ajax({
-            url: '/alumno/create', // URL del endpoint de registro
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(alumnoData), // Convertir el objeto a JSON
-            success: function (response) {
-                // Si el registro es exitoso
+        const telefono = document.getElementById('telefono-individual').value.trim();
 
-                window.location.href = '/dashboard.html'; // Redireccionar al formulario de login
-            },
-            error: function (xhr, status, error) {
-                console.log("Error")
-            }
-        });
+        // Expresión regular para validar un número telefónico internacional o nacional
+        const telefonoValido = /^\+?[\d\s\-()]{9,15}$/.test(telefono);
+
+        if (!telefonoValido) {
+            alert("Por favor, introduce un número de teléfono válido.");
+        } else {
+            console.log("Número de teléfono válido:", telefono);
+
+            const profesor = selectProfesor;
+            const grupo = selectedGroup;
+            // Crear objeto con los datos del usuario
+            let alumnoData = {nombre, apellido, telefono, profesor, grupo};
+            $.ajax({
+                url: '/alumno/create', // URL del endpoint de registro
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(alumnoData), // Convertir el objeto a JSON
+                success: function (response) {
+                    // Si el registro es exitoso
+                    window.location.href = '/dashboard.html'; // Redireccionar al formulario de login
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error")
+                }
+            });
+        }
     });
 
 // =================== Modal: Añadir Grupo ===================
