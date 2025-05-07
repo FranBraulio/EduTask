@@ -219,23 +219,32 @@ $(document).ready(function () {
                         profesorId,
                         enviar_por
                     };
+                    if (enviar_por === "Telegram"){
+                        $.ajax({
+                            url: '/aviso/crear',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(avisoData),
+                            success: function (response) {
+                                // Aqui se puede mostrar un mensaje
+                                console.log("Aviso creado correctamente");
+                                window.location.href = "/dashboard.html";
 
-                    $.ajax({
-                        url: '/aviso/crear',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(avisoData),
-                        success: function (response) {
-                            // Aqui se puede mostrar un mensaje
-                            console.log("Aviso creado correctamente");
-                            window.location.href = "/dashboard.html";
-
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error al crear el aviso:", error);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error al crear el aviso:", error);
+                                buttonTarea.disabled = false;
+                            }
+                        });
+                    }else {
+                        if (enviar_por === "WhatsApp"){
+                            alert("WhatsApp no esta configurado")
+                            buttonTarea.disabled = false;
+                        }else {
+                            alert("Selecciona por que canal quieres enviar el mensaje")
                             buttonTarea.disabled = false;
                         }
-                    });
+                    }
 
                 } catch (e) {
                     console.error("Error al parsear JSON:", e);
