@@ -47,7 +47,7 @@ $(document).ready(function () {
                     window.location.href = "/dashboard.html";
                 });
     });
-    const link = "https://t.me/athmos_bot?start="+$('#alumnoId').val();
+    const link = "https://t.me/athmos_bot?start=ALUMNO_"+$('#alumnoId').val();
     QRCode.toCanvas(document.getElementById('qrcode'), link, {
         width: 256,
         margin: 1,
