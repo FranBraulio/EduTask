@@ -61,6 +61,9 @@ public class TareaController {
             alumnosAsignados.addAll(grupo.getAlumnos());
         } else {
             Alumno alumno = alumnoService.findById(idAsignado);
+            if (alumno == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alumno no encontrado");
+            }
             alumnosAsignados.add(alumno);
         }
         for (Alumno alumno : alumnosAsignados) {

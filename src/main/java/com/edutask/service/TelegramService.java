@@ -9,12 +9,15 @@ import java.util.Map;
 @Service
 public class TelegramService {
 
+    private final RestTemplate restTemplate;
     private final String BOT_TOKEN = "7957933260:AAEDwsG4KMs1QTr2W7_Et9-sdyBDX87dtkU";
     private final String TELEGRAM_API_URL = "https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage";
 
-    public void sendMessage(String chatId, String messageText) {
-        RestTemplate restTemplate = new RestTemplate();
+    public TelegramService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
+    public void sendMessage(String chatId, String messageText) {
         Map<String, String> params = new HashMap<>();
         params.put("chat_id", chatId);
         params.put("text", messageText);

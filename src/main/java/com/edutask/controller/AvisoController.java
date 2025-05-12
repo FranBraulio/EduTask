@@ -2,6 +2,7 @@ package com.edutask.controller;
 
 import com.edutask.entities.*;
 import com.edutask.service.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +42,9 @@ public class AvisoController {
         Aviso aviso = new Aviso();
         aviso.setMensaje(mensajeAviso);
         aviso.setCanal(enviarPor);
+        if (profesorService.findById(Long.parseLong(profesorId)) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profesor no encontrado");
+        }
         aviso.setProfesor(profesorService.findById(Long.parseLong(profesorId)));
         avisoService.save(aviso);
 
@@ -49,9 +53,15 @@ public class AvisoController {
 
         if (idAsignado <= 1000) {
             Grupo grupo = grupoService.findById(idAsignado);
+            if (grupo == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Grupo no encontrado");
+            }
             alumnosAsignados.addAll(grupo.getAlumnos());
         } else {
             Alumno alumno = alumnoService.findById(idAsignado);
+            if (alumno == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Alumno no encontrado");
+            }
             alumnosAsignados.add(alumno);
         }
         for (Alumno alumno : alumnosAsignados) {
