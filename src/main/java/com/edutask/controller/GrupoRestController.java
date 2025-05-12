@@ -24,7 +24,7 @@ public class GrupoRestController {
 
     @PostMapping("/grupo/create")
     @Transactional
-    ResponseEntity<?> create(@RequestBody Grupo grupo) {
+    public ResponseEntity<?> create(@RequestBody Grupo grupo) {
         grupoService.saveGrupo(grupo);
         return ResponseEntity.status(HttpStatus.CREATED).body("Grupo creado con éxito");
     }

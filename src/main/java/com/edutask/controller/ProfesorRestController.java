@@ -37,7 +37,7 @@ public class ProfesorRestController {
 
     @PostMapping("/register")
     @Transactional
-    ResponseEntity<?> create(@RequestBody Profesor profesor) {
+    public ResponseEntity<?> create(@RequestBody Profesor profesor) {
         if (profesor.getUsername() == null || profesor.getEmail() == null || profesor.getPassword() == null) {
             return ResponseEntity.badRequest().body("Faltan datos requeridos");
         } else if (profesorService.findByEmail(profesor.getEmail()) != null) {

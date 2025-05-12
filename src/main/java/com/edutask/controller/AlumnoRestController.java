@@ -30,7 +30,7 @@ public class AlumnoRestController {
 
     @PostMapping("/alumno/create")
     @Transactional
-    ResponseEntity<?> create(@RequestBody Alumno alumno) {
+    public ResponseEntity<?> create(@RequestBody Alumno alumno) {
         alumnoService.save(alumno);
         return ResponseEntity.status(HttpStatus.CREATED).body("Alumno creado con éxito");
     }
