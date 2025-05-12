@@ -1,5 +1,7 @@
 package com.edutask.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -9,12 +11,13 @@ import java.util.Map;
 @Service
 public class TelegramService {
 
+    private final String TELEGRAM_API_URL;
     private final RestTemplate restTemplate;
-    private final String BOT_TOKEN = "7957933260:AAEDwsG4KMs1QTr2W7_Et9-sdyBDX87dtkU";
-    private final String TELEGRAM_API_URL = "https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage";
 
-    public TelegramService(RestTemplate restTemplate) {
+    @Autowired
+    public TelegramService(@Value("${telegram.bot.token}") String botToken, RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+        this.TELEGRAM_API_URL = "https://api.telegram.org/bot" + botToken + "/sendMessage";
     }
 
     public void sendMessage(String chatId, String messageText) {
