@@ -61,6 +61,7 @@ jobs:
             echo 'export SPRING_DATASOURCE_URL="${{ secrets.DB_URL }}"' | sudo tee -a /etc/default/tomcat10
             echo 'export SPRING_DATASOURCE_USERNAME="${{ secrets.DB_USERNAME }}"' | sudo tee -a /etc/default/tomcat10
             echo 'export SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}"' | sudo tee -a /etc/default/tomcat10
+            echo 'export TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}' | sudo tee -a /etc/default/tomcat10
             echo 'SPRING_DATASOURCE_URL="${{ secrets.DB_URL }}"' | sudo tee -a /etc/environment
             echo 'SPRING_DATASOURCE_USERNAME="${{ secrets.DB_USERNAME }}"' | sudo tee -a /etc/environment
             echo 'SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}"' | sudo tee -a /etc/environment
