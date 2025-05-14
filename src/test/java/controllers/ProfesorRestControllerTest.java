@@ -2,8 +2,10 @@ package controllers;
 
 import com.edutask.controller.ProfesorRestController;
 import com.edutask.entities.Profesor;
+import com.edutask.service.EmailService;
 import com.edutask.service.ProfesorService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,8 @@ class ProfesorRestControllerTest {
     private Authentication authentication;
     @Mock
     private HttpServletResponse response;
+    @Mock
+    private EmailService emailService;
 
     @BeforeEach
     void setUp() {
@@ -50,10 +54,8 @@ class ProfesorRestControllerTest {
         when(profesorService.findByEmail("test@example.com")).thenReturn(null);
         when(passwordEncoder.encode("Password123")).thenReturn("encoded");
 
-        // Act
         ResponseEntity<?> response = profesorRestController.create(profesor);
 
-        // Assert
         verify(profesorService).saveUser(any(Profesor.class));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isEqualTo("Profesor creado con éxito");
@@ -174,6 +176,7 @@ class ProfesorRestControllerTest {
     @Test
     void givenId_whenDeleteUserById_shouldRedirect() throws IOException, MessagingException {
         Long id = 1L;
+        when(profesorService.findById(id)).thenReturn(new Profesor());
 
         profesorRestController.deleteUserById(id, response);
 
