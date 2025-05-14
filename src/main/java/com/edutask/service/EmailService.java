@@ -16,12 +16,15 @@ public class EmailService {
     }
 
     public void enviarCorreo(String destinatario, String asunto, String contenido) throws MessagingException {
+        if (destinatario == null) {
+            return;
+        }
         MimeMessage mensaje = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mensaje, true);
         helper.setFrom("athmosedutask@gmail.com");
         helper.setTo(destinatario);
         helper.setSubject(asunto);
-        helper.setText(contenido, true); // true para HTML
+        helper.setText(contenido, true);
         mailSender.send(mensaje);
     }
 }
