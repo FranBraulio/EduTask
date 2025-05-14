@@ -1,6 +1,7 @@
 package com.edutask.controller;
 
 import com.edutask.entities.Profesor;
+import com.edutask.service.EmailService;
 import com.edutask.service.ProfesorService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,10 +30,12 @@ public class ProfesorRestController {
 
     private final PasswordEncoder passwordEncoder;
     private final ProfesorService profesorService;
+    private EmailService emailService;
 
-    public ProfesorRestController(PasswordEncoder passwordEncoder, ProfesorService profesorService) {
+    public ProfesorRestController(PasswordEncoder passwordEncoder, ProfesorService profesorService, EmailService emailService) {
         this.passwordEncoder = passwordEncoder;
         this.profesorService = profesorService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/register")
@@ -51,7 +54,7 @@ public class ProfesorRestController {
                         profesor.setRol("ADMIN");
                     }
                     profesorService.saveUser(profesor);
-
+                    emailService.enviarCorreo(profesor.getEmail(), "¡Bienvenido!", "Gracias por registrarte en CryptoSandbox.");
                     return ResponseEntity.status(HttpStatus.CREATED).body("Profesor creado con éxito");
                 }else {
                     return ResponseEntity.badRequest().body("Contraseña invalida");
@@ -110,28 +113,11 @@ public class ProfesorRestController {
         return ResponseEntity.ok("Profesor registrado con éxito");
     }
 
-    @GetMapping("/delete")
-    public void deleteUser(HttpServletResponse response) throws IOException, MessagingException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Profesor loggedUser;
-
-        // Verifica el tipo de autenticación y obtiene el usuario
-        if (authentication.getPrincipal() instanceof OAuth2User) {
-            loggedUser = profesorService.findByEmail(((OAuth2User) authentication.getPrincipal()).getAttribute("email"));
-        } else {
-            loggedUser = profesorService.findByUsername(authentication.getName());
-        }
-
-        // Envía un correo notificando la eliminación de la cuenta
-        //emailService.enviarCorreo(loggedUser.getEmail(), "¡Cuenta eliminada!", "Su cuenta de CryptoSandbox ha sido eliminada con éxito.");
-        profesorService.deleteById(loggedUser.getId());  // Elimina el usuario de la base de datos
-
-        response.sendRedirect("/logout");  // Redirige al logout
-    }
-
     // Metodo para eliminar un usuario por ID
     @GetMapping("/delete/{id}")
-    public void deleteUserById(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
+    public void deleteUserById(@PathVariable("id") Long id, HttpServletResponse response) throws IOException, MessagingException {
+        Profesor profesor = profesorService.findById(id);
+        emailService.enviarCorreo(profesor.getEmail(), "¡Cuenta eliminada!", "Su cuenta de EduTask ha sido eliminada.");
         profesorService.deleteById(id);
         response.sendRedirect("/administrador");
     }

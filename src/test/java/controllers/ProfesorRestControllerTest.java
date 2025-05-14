@@ -3,6 +3,7 @@ package controllers;
 import com.edutask.controller.ProfesorRestController;
 import com.edutask.entities.Profesor;
 import com.edutask.service.ProfesorService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -171,7 +172,7 @@ class ProfesorRestControllerTest {
     }
 
     @Test
-    void givenId_whenDeleteUserById_shouldRedirect() throws IOException {
+    void givenId_whenDeleteUserById_shouldRedirect() throws IOException, MessagingException {
         Long id = 1L;
 
         profesorRestController.deleteUserById(id, response);

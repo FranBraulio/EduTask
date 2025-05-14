@@ -35,10 +35,10 @@ $(document).ready(function () {
                     data: JSON.stringify(profesorData), // Convertir el objeto a JSON
                     success: function (response) {
                         // Si el registro es exitoso
-                        if (response === "Usuario creado con éxito") {
+                        if (response === "Profesor creado con éxito") {
                             deleteBG(header) // Limpiar el estilo de fondo anterior
                             header.classList.add("bg-success") // Añadir estilo de fondo verde
-                            title.textContent = "Usuario creado con éxito"
+                            title.textContent = "Profesor creado con éxito"
                             text.textContent = "El usuario ha sido creado con éxito."
                             errorModal.show(); // Mostrar el modal de éxito
                         }
