@@ -3,6 +3,7 @@ package com.edutask.controller;
 import com.edutask.entities.*;
 import com.edutask.repository.*;
 import com.edutask.service.*;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,22 +27,30 @@ public class TareaController {
     private final AlumnoTareaService alumnoTareaService;
     private final ProfesorService profesorService;
     private final TelegramService telegramService;
+    private final EmailService emailService;
 
-    public TareaController(TareaService tareaService, AlumnoService alumnoService, GrupoService grupoService, AlumnoTareaService alumnoTareaService, ProfesorService profesorService, TelegramService telegramService) {
+    public TareaController(TareaService tareaService, AlumnoService alumnoService, GrupoService grupoService, AlumnoTareaService alumnoTareaService, ProfesorService profesorService, TelegramService telegramService, EmailService emailService) {
         this.tareaService = tareaService;
         this.alumnoService = alumnoService;
         this.grupoService = grupoService;
         this.alumnoTareaService = alumnoTareaService;
         this.profesorService = profesorService;
         this.telegramService = telegramService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<String> crearTarea(@RequestBody Map<String, String> datos) {
+    public ResponseEntity<String> crearTarea(@RequestBody Map<String, String> datos) throws MessagingException {
         String descripcion = datos.get("descripcion");
         String fechaLimite = datos.get("fecha_limite");
         String asignarA = datos.get("asignar_a");
         String profesorId = datos.get("profesorId");
+
+        if (profesorId == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Profesor no encontrado");
+        }
+
+        Profesor profesor = profesorService.findById(Long.parseLong(profesorId));
 
         Tarea tarea = new Tarea();
         tarea.setMensaje(descripcion);
@@ -50,7 +59,7 @@ public class TareaController {
             tarea.setFecha_fin(LocalDate.parse(fechaLimite).atStartOfDay());
         }
 
-        tarea.setProfesor(profesorService.findById(Long.parseLong(profesorId)));
+        tarea.setProfesor(profesor);
         tareaService.saveTarea(tarea);
 
         Set<Alumno> alumnosAsignados = new HashSet<>();
@@ -82,8 +91,8 @@ public class TareaController {
                 }
                 telegramService.sendMessage(chatId, mensaje);
             }
-
         }
+        emailService.enviarCorreo(profesor.getEmail(), "Tarea asignada", "Se ha asignado la tarea: "+ descripcion +" correctamente.");
 
         return ResponseEntity.ok("Tarea creada exitosamente");
     }

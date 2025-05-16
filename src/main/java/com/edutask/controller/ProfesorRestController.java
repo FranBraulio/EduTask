@@ -54,7 +54,7 @@ public class ProfesorRestController {
                         profesor.setRol("ADMIN");
                     }
                     profesorService.saveUser(profesor);
-                    emailService.enviarCorreo(profesor.getEmail(), "¡Bienvenido!", "Gracias por registrarte en CryptoSandbox.");
+                    emailService.enviarCorreo(profesor.getEmail(), "¡Bienvenido!", "Se le ha registrado en EduTask.");
                     return ResponseEntity.status(HttpStatus.CREATED).body("Profesor creado con éxito");
                 }else {
                     return ResponseEntity.badRequest().body("Contraseña invalida");

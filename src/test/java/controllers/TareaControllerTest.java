@@ -3,6 +3,7 @@ package controllers;
 import com.edutask.controller.TareaController;
 import com.edutask.entities.*;
 import com.edutask.service.*;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -29,6 +30,8 @@ class TareaControllerTest {
     private ProfesorService profesorService;
     @Mock
     private TelegramService telegramService;
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private TareaController tareaController;
@@ -56,7 +59,7 @@ class TareaControllerTest {
     }
 
     @Test
-    void givenValidTareaData_whenCreateTarea_shouldReturnSuccess() {
+    void givenValidTareaData_whenCreateTarea_shouldReturnSuccess() throws MessagingException {
         Map<String, String> tareaData = new HashMap<>();
         tareaData.put("descripcion", "Tarea de prueba");
         tareaData.put("fecha_limite", "2025-06-01");
@@ -70,12 +73,13 @@ class TareaControllerTest {
 
         verify(tareaService).saveTarea(any(Tarea.class));
         verify(telegramService).sendMessage("12345", "Buenas, te han asignado la siguiente tarea: Tarea de prueba. Recuerda que tienes de fecha limite: 2025-06-01");
+        verify(emailService).enviarCorreo(profesor.getEmail(), "Tarea asignada", "Se ha asignado la tarea: "+ "Tarea de prueba" +" correctamente.");
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(response.getBody()).isEqualTo("Tarea creada exitosamente");
     }
 
     @Test
-    void givenTareaData_whenAlumnoNotFound_shouldReturnError() {
+    void givenTareaData_whenAlumnoNotFound_shouldReturnError() throws MessagingException {
         Map<String, String> tareaData = new HashMap<>();
         tareaData.put("descripcion", "Tarea de prueba");
         tareaData.put("fecha_limite", "2025-06-01");
@@ -104,7 +108,7 @@ class TareaControllerTest {
     }
 
     @Test
-    void givenNoAlumnosAssigned_whenCreateTarea_shouldSendMessageOnlyToTelegram() {
+    void givenNoAlumnosAssigned_whenCreateTarea_shouldSendMessageOnlyToTelegram() throws MessagingException {
         Map<String, String> tareaData = new HashMap<>();
         tareaData.put("descripcion", "Tarea sin alumnos asignados");
         tareaData.put("fecha_limite", "");
@@ -117,6 +121,7 @@ class TareaControllerTest {
         ResponseEntity<String> response = tareaController.crearTarea(tareaData);
 
         verify(telegramService).sendMessage("12345", "Buenas, te han asignado la siguiente tarea: Tarea sin alumnos asignados");
+        verify(emailService).enviarCorreo(profesor.getEmail(), "Tarea asignada", "Se ha asignado la tarea: "+ "Tarea sin alumnos asignados" +" correctamente.");
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
     }
 }
