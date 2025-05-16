@@ -2,6 +2,7 @@ package com.edutask.controller;
 
 import com.edutask.entities.*;
 import com.edutask.service.*;
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,29 +23,33 @@ public class AvisoController {
     private final ProfesorService profesorService;
     private final TelegramService telegramService;
     private final AvisoService avisoService;
+    private final EmailService emailService;
 
-    public AvisoController(AlumnoService alumnoService, GrupoService grupoService, ProfesorService profesorService, TelegramService telegramService, AvisoService avisoService) {
+    public AvisoController(AlumnoService alumnoService, GrupoService grupoService, ProfesorService profesorService, TelegramService telegramService, AvisoService avisoService, EmailService emailService) {
         this.alumnoService = alumnoService;
         this.grupoService = grupoService;
         this.profesorService = profesorService;
         this.telegramService = telegramService;
         this.avisoService = avisoService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<String> crearAviso(@RequestBody Map<String, String> datos) {
+    public ResponseEntity<String> crearAviso(@RequestBody Map<String, String> datos) throws MessagingException {
         String mensajeAviso = datos.get("mensaje_aviso");
         String asignarA = datos.get("enviar_a_aviso");
         String profesorId = datos.get("profesorId");
         String enviarPor = datos.get("enviar_por");
 
+        Profesor profesor = profesorService.findById(Long.parseLong(profesorId));
+
         Aviso aviso = new Aviso();
         aviso.setMensaje(mensajeAviso);
         aviso.setCanal(enviarPor);
-        if (profesorService.findById(Long.parseLong(profesorId)) == null) {
+        if (profesor == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profesor no encontrado");
         }
-        aviso.setProfesor(profesorService.findById(Long.parseLong(profesorId)));
+        aviso.setProfesor(profesor);
         avisoService.save(aviso);
 
         Set<Alumno> alumnosAsignados = new HashSet<>();
@@ -70,6 +75,7 @@ public class AvisoController {
                 telegramService.sendMessage(chatId, mensaje);
             }
         }
+        emailService.enviarCorreo(profesor.getEmail(), "Aviso enviado", "Se ha enviado el aviso: "+ mensajeAviso +" correctamente.");
 
         return ResponseEntity.ok("Aviso creado exitosamente");
     }

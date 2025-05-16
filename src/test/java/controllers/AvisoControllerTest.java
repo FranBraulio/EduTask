@@ -5,11 +5,8 @@ import com.edutask.entities.Alumno;
 import com.edutask.entities.Aviso;
 import com.edutask.entities.Grupo;
 import com.edutask.entities.Profesor;
-import com.edutask.service.AvisoService;
-import com.edutask.service.AlumnoService;
-import com.edutask.service.TelegramService;
-import com.edutask.service.ProfesorService;
-import com.edutask.service.GrupoService;
+import com.edutask.service.*;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,6 +34,8 @@ class AvisoControllerTest {
     private TelegramService telegramService;
     @Mock
     private AvisoService avisoService;
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private AvisoController avisoController;
@@ -47,7 +46,7 @@ class AvisoControllerTest {
     }
 
     @Test
-    void givenValidData_whenCreateAviso_thenReturnSuccess() {
+    void givenValidData_whenCreateAviso_thenReturnSuccess() throws MessagingException {
         Map<String, String> datos = new HashMap<>();
         datos.put("mensaje_aviso", "Este es un aviso importante");
         datos.put("enviar_a_aviso", "2001");
@@ -65,13 +64,14 @@ class AvisoControllerTest {
 
         verify(avisoService, times(1)).save(any(Aviso.class));
         verify(telegramService, times(1)).sendMessage(eq("123456"), eq("AVISO: Este es un aviso importante"));
+        verify(emailService).enviarCorreo(profesor.getEmail(), "Aviso enviado", "Se ha enviado el aviso: "+ "Este es un aviso importante" +" correctamente.");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("Aviso creado exitosamente");
     }
 
     @Test
-    void givenInvalidProfesorId_whenCreateAviso_thenReturnNotFoundHttpStatus() {
+    void givenInvalidProfesorId_whenCreateAviso_thenReturnNotFoundHttpStatus() throws MessagingException {
         Map<String, String> datos = new HashMap<>();
         datos.put("mensaje_aviso", "Este es un aviso importante");
         datos.put("enviar_a_aviso", "2001");
@@ -87,7 +87,7 @@ class AvisoControllerTest {
     }
 
     @Test
-    void givenInvalidGrupoId_whenCreateAviso_thenReturnNotFoundHttpStatus() {
+    void givenInvalidGrupoId_whenCreateAviso_thenReturnNotFoundHttpStatus() throws MessagingException {
         Map<String, String> datos = new HashMap<>();
         datos.put("mensaje_aviso", "Este es un aviso importante");
         datos.put("enviar_a_aviso", "5");
@@ -104,7 +104,7 @@ class AvisoControllerTest {
     }
 
     @Test
-    void givenInvalidAlumnoId_whenCreateAviso_thenReturnNotFoundHttpStatus() {
+    void givenInvalidAlumnoId_whenCreateAviso_thenReturnNotFoundHttpStatus() throws MessagingException {
         Map<String, String> datos = new HashMap<>();
         datos.put("mensaje_aviso", "Este es un aviso importante");
         datos.put("enviar_a_aviso", "3001");
