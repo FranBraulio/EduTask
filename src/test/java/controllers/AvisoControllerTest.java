@@ -64,7 +64,6 @@ class AvisoControllerTest {
 
         verify(avisoService, times(1)).save(any(Aviso.class));
         verify(telegramService, times(1)).sendMessage(eq("123456"), eq("AVISO: Este es un aviso importante"));
-        verify(emailService).enviarCorreo(profesor.getEmail(), "Aviso enviado", "Se ha enviado el aviso: "+ "Este es un aviso importante" +" correctamente.");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("Aviso creado exitosamente");

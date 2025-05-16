@@ -43,6 +43,45 @@ public class AvisoController {
 
         Profesor profesor = profesorService.findById(Long.parseLong(profesorId));
 
+        if (profesor == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profesor no encontrado");
+        }
+
+        String contenidoHTML = """
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; }
+                    .container { max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; }
+                    .header { border-bottom: 2px solid #4CAF50; margin-bottom: 20px; }
+                    .header h2 { color: #4CAF50; }
+                    .content p { line-height: 1.6; }
+                    .footer { font-size: 0.9em; color: #777; border-top: 1px solid #eee; margin-top: 30px; padding-top: 15px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h2>EduTask - Notificación de Aviso</h2>
+                    </div>
+                    <div class="content">
+                        <p>Hola <strong>%s</strong>,</p>
+                        <p>Te informamos que el siguiente aviso ha sido enviado correctamente:</p>
+                        <blockquote style="border-left: 4px solid #4CAF50; margin: 20px 0; padding-left: 15px; color: #555;">
+                            %s
+                        </blockquote>
+                        <p>Gracias por confiar en EduTask.</p>
+                    </div>
+                    <div class="footer">
+                        <p>Este correo ha sido enviado automáticamente por EduTask. No respondas a este mensaje.</p>
+                        <p>&copy; 2025 EduTask. Todos los derechos reservados.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+    """.formatted(profesor.getUsername(), mensajeAviso);
+
+
         Aviso aviso = new Aviso();
         aviso.setMensaje(mensajeAviso);
         aviso.setCanal(enviarPor);
@@ -75,7 +114,11 @@ public class AvisoController {
                 telegramService.sendMessage(chatId, mensaje);
             }
         }
-        emailService.enviarCorreo(profesor.getEmail(), "Aviso enviado", "Se ha enviado el aviso: "+ mensajeAviso +" correctamente.");
+        emailService.enviarCorreo(
+            profesor.getEmail(),
+            "Notificación de Aviso - EduTask",
+            contenidoHTML
+        );
 
         return ResponseEntity.ok("Aviso creado exitosamente");
     }
