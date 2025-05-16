@@ -46,11 +46,46 @@ public class TareaController {
         String asignarA = datos.get("asignar_a");
         String profesorId = datos.get("profesorId");
 
-        if (profesorId == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Profesor no encontrado");
+        Profesor profesor = profesorService.findById(Long.parseLong(profesorId));
+
+        if (profesor == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profesor no encontrado");
         }
 
-        Profesor profesor = profesorService.findById(Long.parseLong(profesorId));
+        String contenidoHTML = """
+    <html>
+    <head>
+        <style>
+            body { font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px; }
+            .container { max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; }
+            .header { border-bottom: 2px solid #2196F3; margin-bottom: 20px; }
+            .header h2 { color: #2196F3; }
+            .content p { line-height: 1.6; }
+            .footer { font-size: 0.9em; color: #777; border-top: 1px solid #eee; margin-top: 30px; padding-top: 15px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h2>EduTask - Nueva Tarea Asignada</h2>
+            </div>
+            <div class="content">
+                <p>Hola <strong>%s</strong>,</p>
+                <p>La siguiente tarea ha sido asignada correctamente:</p>
+                <blockquote style="border-left: 4px solid #2196F3; margin: 20px 0; padding-left: 15px; color: #555;">
+                    %s
+                </blockquote>
+                <p>Puedes consultar todos los detalles accediendo a tu panel de EduTask.</p>
+            </div>
+            <div class="footer">
+                <p>Este correo ha sido enviado automáticamente por EduTask. No respondas a este mensaje.</p>
+                <p>&copy; 2025 EduTask. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """.formatted(profesor.getUsername(), descripcion);
+
 
         Tarea tarea = new Tarea();
         tarea.setMensaje(descripcion);
@@ -92,7 +127,11 @@ public class TareaController {
                 telegramService.sendMessage(chatId, mensaje);
             }
         }
-        emailService.enviarCorreo(profesor.getEmail(), "Tarea asignada", "Se ha asignado la tarea: "+ descripcion +" correctamente.");
+        emailService.enviarCorreo(
+            profesor.getEmail(),
+            "Tarea asignada - EduTask",
+            contenidoHTML
+        );
 
         return ResponseEntity.ok("Tarea creada exitosamente");
     }

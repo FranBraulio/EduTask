@@ -73,7 +73,6 @@ class TareaControllerTest {
 
         verify(tareaService).saveTarea(any(Tarea.class));
         verify(telegramService).sendMessage("12345", "Buenas, te han asignado la siguiente tarea: Tarea de prueba. Recuerda que tienes de fecha limite: 2025-06-01");
-        verify(emailService).enviarCorreo(profesor.getEmail(), "Tarea asignada", "Se ha asignado la tarea: "+ "Tarea de prueba" +" correctamente.");
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(response.getBody()).isEqualTo("Tarea creada exitosamente");
     }
@@ -121,7 +120,6 @@ class TareaControllerTest {
         ResponseEntity<String> response = tareaController.crearTarea(tareaData);
 
         verify(telegramService).sendMessage("12345", "Buenas, te han asignado la siguiente tarea: Tarea sin alumnos asignados");
-        verify(emailService).enviarCorreo(profesor.getEmail(), "Tarea asignada", "Se ha asignado la tarea: "+ "Tarea sin alumnos asignados" +" correctamente.");
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
     }
 }

@@ -81,7 +81,6 @@ public class AvisoController {
             </html>
     """.formatted(profesor.getUsername(), mensajeAviso);
 
-
         Aviso aviso = new Aviso();
         aviso.setMensaje(mensajeAviso);
         aviso.setCanal(enviarPor);
