@@ -44,7 +44,6 @@ public class AlumnoControllerTest {
 
     @Test
     void givenAlumno_whenAlumnoRestControllerEditarAlumno_shouldUpdateAndReturnOkResponse() {
-        // Arrange
         Alumno input = new Alumno();
         input.setId(1L);
         input.setNombre("Juan");
