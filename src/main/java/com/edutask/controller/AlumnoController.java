@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -37,9 +38,22 @@ public class AlumnoController {
         if (alumno == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Alumno no encontrado");
         }
+        List<Profesor> profesores;
+        List<Grupo> grupos;
 
-        List<Profesor> profesores = profesorService.findAll();
-        List<Grupo> grupos = grupoService.findAll();
+        try {
+            profesores = profesorService.findAll();
+        } catch (Exception e) {
+            profesores = Collections.emptyList();
+            System.err.println("No se pudieron cargar los profesores: " + e.getMessage());
+        }
+
+        try {
+            grupos = grupoService.findAll();
+        } catch (Exception e) {
+            grupos = Collections.emptyList();
+            System.err.println("No se pudieron cargar los grupos: " + e.getMessage());
+        }
 
         model.addAttribute("alumno", alumno);
         model.addAttribute("profesores", profesores);
