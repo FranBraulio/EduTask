@@ -26,7 +26,6 @@ jobs:
             echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
             echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
             echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> $GITHUB_ENV
-            echo "MAIL_TOKEN=${{ secrets.MAIL_TOKEN }}" >> $GITHUB_ENV
 
       # 3️⃣ Construir la aplicación usando Maven
       - name: Build with Maven          # Nombre del paso.
@@ -63,11 +62,8 @@ jobs:
             echo 'export SPRING_DATASOURCE_USERNAME="${{ secrets.DB_USERNAME }}"' | sudo tee -a /etc/default/tomcat10
             echo 'export SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}"' | sudo tee -a /etc/default/tomcat10
             echo 'export TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}' | sudo tee -a /etc/default/tomcat10
-            echo 'export MAIL_TOKEN=${{ secrets.MAIL_TOKEN }}' | sudo tee -a /etc/default/tomcat10
             echo 'SPRING_DATASOURCE_URL="${{ secrets.DB_URL }}"' | sudo tee -a /etc/environment
             echo 'SPRING_DATASOURCE_USERNAME="${{ secrets.DB_USERNAME }}"' | sudo tee -a /etc/environment
             echo 'SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}"' | sudo tee -a /etc/environment
             echo 'TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}"' | sudo tee -a /etc/environment
-            echo 'MAIL_TOKEN="${{ secrets.MAIL_TOKEN }}"' | sudo tee -a /etc/environment
-
             sudo systemctl restart tomcat10
