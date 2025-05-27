@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const listaHistorialAdmin = document.getElementById('lista-historial-admin');
     const historialInput = document.getElementById('buscar-historial');
-
+    const deleteProfesor = document.getElementById("boton-eliminar-profesor");
     let initialTareas = [];
 
     getTareas();
@@ -55,4 +55,28 @@ $(document).ready(function () {
         }
     });
 
+    deleteProfesor.addEventListener("click", () => {
+        var myModal = new bootstrap.Modal(document.getElementById("confirmModal"));
+        myModal.show();
+
+        document.getElementById("confirmYes").onclick = () => {
+            console.log("Eliminando...");
+            myModal.hide();
+            const id = document.getElementById("profesor-id").textContent;
+            if (!id) {
+                console.error("No se encontró el id del profesor");
+                return;
+            }
+
+            $.get(`/delete/${id}`)
+                .done(() => {
+                    console.log("Profesor eliminado correctamente");
+                    window.location.href = "/administrador"
+                })
+                .fail(() => {
+                    console.error("Error al eliminar el profesor");
+                    alert("No se pudo eliminar el profesor");
+                });
+        }
+    });
 });
