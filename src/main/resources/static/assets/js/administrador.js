@@ -74,8 +74,7 @@ $(document).ready(function () {
                     window.location.href = "/administrador"
                 })
                 .fail(() => {
-                    console.error("Error al eliminar el profesor");
-                    alert("No se pudo eliminar el profesor");
+                    window.location.href = "/administrador"
                 });
         }
     });
