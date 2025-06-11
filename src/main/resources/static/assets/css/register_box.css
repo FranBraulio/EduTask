@@ -10,6 +10,17 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.display-6 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    margin: 0;
+}
+
 .inputForm {
     border: 1.5px solid #ecedec;
     border-radius: 10px;
